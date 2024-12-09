@@ -27,6 +27,12 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" # not specifing a user agent causes a 403 Forbidden 
         })
 
+        # probably would never happen unless BOJ relocates their URL
+        # if this happens at all, it would be on the first search,
+        # as even inputting a non-existent username comes back with status code 200.
+        if response.status_code != 200:
+            raise Exception(f"Request on {url} returned with code {response.status_code}!")
+
         soup = BeautifulSoup(response.text, 'lxml')
 
         table_entries = soup.tbody.contents # list of tr tags

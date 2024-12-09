@@ -70,8 +70,3 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
         url = NEXT_PAGE_URL + next_page_tag['href']
 
     return res
-
-submissions = crawl('shhhhzzang')
-
-for submission in submissions:
-    print(submission)

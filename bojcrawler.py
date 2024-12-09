@@ -2,8 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+
 INIT_SEARCH_URL = "https://www.acmicpc.net/status?problem_id=&user_id="
 NEXT_PAGE_URL = "https://www.acmicpc.net"
+
 
 class BOJSubmission:
     def __init__(self, problem_id: int, problem_title: str, result_str: str, submit_time: datetime):
@@ -14,6 +16,7 @@ class BOJSubmission:
     def __repr__(self):
         return f"BOJSubmission(problem_id={self.problem_id}, problem_title={self.problem_title}, result={self.result_str}, submit_time={self.submit_time})"
 
+
 def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:
 
     url = INIT_SEARCH_URL + user_id
@@ -22,9 +25,10 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
 
     while True:
 
+        # not specifing a user agent causes a 403 Forbidden
         response = requests.get(url,
             headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" # not specifing a user agent causes a 403 Forbidden 
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" 
         })
 
         # probably would never happen unless BOJ relocates their URL
@@ -33,6 +37,7 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
         if response.status_code != 200:
             raise Exception(f"Request on {url} returned with code {response.status_code}!")
 
+        # lxml parser
         soup = BeautifulSoup(response.text, 'lxml')
 
         table_entries = soup.tbody.contents # list of tr tags
@@ -41,12 +46,6 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
 
         for entry in table_entries:
 
-            problem_tag = entry.find(class_='problem_title')
-
-            problem_id = problem_tag.string
-            problem_title = problem_tag['title']
-
-            result_str = entry.find(class_='result').string 
             submit_time = datetime.strptime(entry.find(class_='real-time-update')['title'],
                                              "%Y-%m-%d %H:%M:%S")
 
@@ -54,7 +53,14 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
                 done = True
                 break
 
-            submission = BOJSubmission(int(problem_id),
+            problem_tag = entry.find(class_='problem_title')
+
+            problem_id = int(problem_tag.string)
+            problem_title = problem_tag['title']
+
+            result_str = entry.find(class_='result').string 
+
+            submission = BOJSubmission(problem_id,
                                        problem_title,
                                        result_str,
                                        submit_time)

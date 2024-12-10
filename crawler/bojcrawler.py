@@ -17,12 +17,12 @@ BOJ_BASE_URL = "https://www.acmicpc.net"
 SUBMIT_TAG_ID_PREFIX = "solution-"
 
 
-def check_user_exists(username: str) -> bool:
+def boj_user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
     return response.status_code == 200
 
 
-def crawl(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:
+def boj_get_submissions(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:
 
     url = INIT_SEARCH_URL + username
 
@@ -64,7 +64,8 @@ def crawl(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSu
 
             result_str = entry.find(class_='result').string 
 
-            submission = BOJSubmission(submit_id,
+            submission = BOJSubmission(username,
+                                       submit_id,
                                        problem_id,
                                        problem_title,
                                        problem_href,

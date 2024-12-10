@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QTableView, QHeaderView, QAbstractItemView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
+from common.bojsubmission import BOJSubmission
+
 COLUMN_LABELS = ["Username", "Problem", "Result", "Time"]
 
 class SubmissionTable(QTableView):
@@ -17,3 +19,6 @@ class SubmissionTable(QTableView):
 
         # auto resize columns to fit window
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
+    def add_submission(self, submission: BOJSubmission):
+        ...

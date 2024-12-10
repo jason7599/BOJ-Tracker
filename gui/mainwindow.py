@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QMainWindow, QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QMainWindow, QPushButton
 
 from gui.widgets.submissiontable import SubmissionTable
 
@@ -18,6 +17,17 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle(WINDOW_TITLE)
 
-        # promoted to SubmissionTable class
-        self.submission_table = self.findChild(QTableView, 'submission_table')
+        self.submission_table = self.findChild(SubmissionTable, 'submission_table')
+
+        self.settings_button = self.findChild(QPushButton, 'settings_button')
+        self.settings_button.clicked.connect(self.open_settings)
+
+        self.refresh_button = self.findChild(QPushButton, 'refresh_button')
+        self.refresh_button.clicked.connect(self.refresh)
+
+    def open_settings(self):
+        print('open_settings')
+    
+    def refresh(self):
+        print('refresh!')
         

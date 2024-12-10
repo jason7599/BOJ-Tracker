@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QMainWindow, QPushButton
 

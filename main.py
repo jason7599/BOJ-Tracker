@@ -6,6 +6,8 @@ from gui.mainwindow import MainWindow
 def main():
     app = QApplication(sys.argv)
 
+    # TODO: load JSON file
+
     window = MainWindow()
     window.show()
 

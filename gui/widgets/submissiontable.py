@@ -23,9 +23,9 @@ class SubmissionTable(QTableView):
         # auto resize columns to fit window
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
-    # todo: problem icon along problem_title
-    # todo: more readable submit_time
-    # todo: colored result_str
+    # TODO: problem icon along problem_title
+    # TODO: more readable submit_time
+    # TODO: colored result_str
     def add(self, submission: BOJSubmission):
 
         username_item = QStandardItem(submission.username)
@@ -44,7 +44,7 @@ class SubmissionTable(QTableView):
             time_item
         ])
 
-    # todo: probably exists a better method for adding multiple rows
+    # TODO: probably exists a better method for adding multiple rows
     def add_all(self, submissions: list[BOJSubmission]):
         for submission in submissions:
             self.add(submission)

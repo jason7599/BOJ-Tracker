@@ -12,8 +12,11 @@ USER_SEARCH_URL = "https://www.acmicpc.net/user/"
 INIT_SEARCH_URL = "https://www.acmicpc.net/status?problem_id=&user_id="
 BOJ_BASE_URL = "https://www.acmicpc.net"
 
+SUBMIT_TAG_ID_PREFIX = "solution-"
+
 class BOJSubmission:
-    def __init__(self, problem_id: int, problem_title: str, problem_href: str, result_str: str, submit_time: datetime):
+    def __init__(self, submit_id: int, problem_id: int, problem_title: str, problem_href: str, result_str: str, submit_time: datetime):
+        self.submit_id = submit_id
         self.problem_id = problem_id
         self.problem_title = problem_title
         self.problem_href = problem_href
@@ -60,6 +63,8 @@ def crawl(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSu
                 done = True
                 break
 
+            submit_id = int(entry['id'].removeprefix(SUBMIT_TAG_ID_PREFIX))
+
             problem_tag = entry.find(class_='problem_title')
 
             problem_id = int(problem_tag.string)
@@ -68,7 +73,8 @@ def crawl(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSu
 
             result_str = entry.find(class_='result').string 
 
-            submission = BOJSubmission(problem_id,
+            submission = BOJSubmission(submit_id,
+                                       problem_id,
                                        problem_title,
                                        problem_href,
                                        result_str,
@@ -91,5 +97,3 @@ def crawl(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSu
         url = BOJ_BASE_URL + next_page_tag['href']
 
     return res
-
-crawl('shhhhzzang', max_cnt=2)

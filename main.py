@@ -3,20 +3,31 @@ from PyQt5.QtWidgets import QApplication
 
 from gui.mainwindow import MainWindow
 
-from common.datahandler import load_tracker_data, write_tracker_data
+import common.datastore
+
+
+def load_data():
+    from common.datahandler import load_tracker_data
+
+    common.datastore.tracker_data = load_tracker_data()
+
+def write_data():
+    from common.datahandler import write_tracker_data
+
+    write_tracker_data(common.datastore.tracker_data)
+
 
 def main():
-    app = QApplication(sys.argv)
+    load_data()
 
-    tracker_data = load_tracker_data()
+    app = QApplication(sys.argv)
 
     window = MainWindow()
     window.show()
 
     exit_code = app.exec_()
 
-    write_tracker_data(tracker_data)
-
+    write_data()
     sys.exit(exit_code)
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton
 
 from gui.widgets.submissiontable import SubmissionTable
 
+import common.datastore
 from crawler.bojcrawler import boj_user_exists, boj_get_submissions
 
 UI_PATH = "gui/ui/main.ui"
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
         self.refresh_button.clicked.connect(self.refresh)
 
     def open_settings(self):
-        submissions = boj_get_submissions('shhhhzzang', max_cnt=10)
+        submissions = boj_get_submissions('shhhhzzang', max_cnt=20)
         self.submission_table.add_all(submissions)
     
     def refresh(self):

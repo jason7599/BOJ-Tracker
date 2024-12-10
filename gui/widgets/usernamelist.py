@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QListView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
+# TODO: prettier entries
 class UsernameList(QListView):
     def __init__(self, parent=None):
         super().__init__(parent)

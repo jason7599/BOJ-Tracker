@@ -16,6 +16,7 @@ BOJ_BASE_URL = "https://www.acmicpc.net"
 
 SUBMIT_TAG_ID_PREFIX = "solution-"
 
+DEFAULT_MAX_FETCH_CNT = 200
 
 def boj_user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
@@ -24,7 +25,7 @@ def boj_user_exists(username: str) -> bool:
     return bool(response) # True if status_code is between 200 and 399
 
 
-def boj_get_submissions(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:
+def boj_get_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_time = datetime.min) -> list[BOJSubmission]:
 
     url = INIT_SEARCH_URL + username
 

@@ -14,6 +14,7 @@ UI_PATH = "gui/ui/main.ui"
 
 WINDOW_TITLE = "BOJ Tracker"
 
+# TODO: populate mainwindow widgets (submissiontable, userlistview)
 class MainWindow(QMainWindow):
     def __init__(self, ):
         super().__init__()

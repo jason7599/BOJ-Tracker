@@ -8,7 +8,7 @@ import common.datastore
 
 def load_data():
     from common.datahandler import load_tracker_data
-    
+
     common.datastore.tracker_data = load_tracker_data()
 
 def write_data():
@@ -16,7 +16,6 @@ def write_data():
 
     write_tracker_data(common.datastore.tracker_data)
 
-# TODO: populate mainwindow widgets (submissiontable, userlistview)
 
 def main():
     load_data()
@@ -35,6 +34,7 @@ def main():
     print("cleanup done")
 
     sys.exit(exit_code)
+
 
 if __name__ == "__main__":
     main()

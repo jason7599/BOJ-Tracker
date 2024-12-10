@@ -2,38 +2,45 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+# not specifing a user agent causes a 403 Forbidden
+REQUEST_HEADERS = \
+{
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" 
+}
 
+USER_SEARCH_URL = "https://www.acmicpc.net/user/"
 INIT_SEARCH_URL = "https://www.acmicpc.net/status?problem_id=&user_id="
-NEXT_PAGE_URL = "https://www.acmicpc.net"
-
+BOJ_BASE_URL = "https://www.acmicpc.net"
 
 class BOJSubmission:
-    def __init__(self, problem_id: int, problem_title: str, result_str: str, submit_time: datetime):
+    def __init__(self, problem_id: int, problem_title: str, problem_href: str, result_str: str, submit_time: datetime):
         self.problem_id = problem_id
         self.problem_title = problem_title
+        self.problem_href = problem_href
         self.result_str = result_str
         self.submit_time = submit_time
     def __repr__(self):
         return f"BOJSubmission(problem_id={self.problem_id}, problem_title={self.problem_title}, result={self.result_str}, submit_time={self.submit_time})"
 
 
-def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:
+def check_user_exists(username: str) -> bool:
+    response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
+    return response.status_code == 200
 
-    url = INIT_SEARCH_URL + user_id
+
+def crawl(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:
+
+    url = INIT_SEARCH_URL + username
 
     res: list[BOJSubmission] = []
 
     while True:
 
-        # not specifing a user agent causes a 403 Forbidden
-        response = requests.get(url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" 
-        })
+        response = requests.get(url, headers=REQUEST_HEADERS)
 
         # probably would never happen unless BOJ relocates their URL
         # if this happens at all, it would be on the first search,
-        # as even inputting a non-existent username comes back with status code 200.
+        # as even inputting a non-existent username does come back with status code 200.
         if response.status_code != 200:
             raise Exception(f"Request on {url} returned with code {response.status_code}!")
 
@@ -57,11 +64,13 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
 
             problem_id = int(problem_tag.string)
             problem_title = problem_tag['title']
+            problem_href = BOJ_BASE_URL + problem_tag['href']
 
             result_str = entry.find(class_='result').string 
 
             submission = BOJSubmission(problem_id,
                                        problem_title,
+                                       problem_href,
                                        result_str,
                                        submit_time)
 
@@ -79,6 +88,8 @@ def crawl(user_id: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSub
         if not next_page_tag:
             break
     
-        url = NEXT_PAGE_URL + next_page_tag['href']
+        url = BOJ_BASE_URL + next_page_tag['href']
 
     return res
+
+crawl('shhhhzzang', max_cnt=2)

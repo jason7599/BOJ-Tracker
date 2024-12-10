@@ -51,6 +51,7 @@ class SubmissionTable(QTableView):
     
     def clear(self):
         self.model().clear()
+        self.model().setHorizontalHeaderLabels(COLUMN_LABELS) # stupid
 
     # open link
     def mousePressEvent(self, event):

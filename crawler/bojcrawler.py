@@ -19,7 +19,9 @@ SUBMIT_TAG_ID_PREFIX = "solution-"
 
 def boj_user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
-    return response.status_code == 200
+    # Weird. I swear to god it used to return 200, but now it seems to return 202.
+    # return response.status_code == 200
+    return bool(response) # True if status_code is between 200 and 399
 
 
 def boj_get_submissions(username: str, max_cnt = 100, after_time = datetime.min) -> list[BOJSubmission]:

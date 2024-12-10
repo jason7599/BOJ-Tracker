@@ -10,7 +10,7 @@ UI_PATH = "gui/ui/main.ui"
 WINDOW_TITLE = "BOJ Tracker"
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, ):
         super().__init__()
 
         loadUi(UI_PATH, self)

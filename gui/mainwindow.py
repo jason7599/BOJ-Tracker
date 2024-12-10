@@ -34,4 +34,4 @@ class MainWindow(QMainWindow):
     def refresh(self):
         self.submission_table.clear()
         print('refresh!')
-        
+    

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QIcon
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
 from common.bojsubmission import BOJSubmission
 
@@ -17,10 +17,16 @@ class SubmissionTable(QTableView):
         # disable editing
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
+        self.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+
         # auto resize columns to fit window
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
+    # todo: href on problem_title
+    # todo: problem icon along problem_title
+    # todo: more readable submit_time
     def add(self, submission: BOJSubmission):
+
         row = [QStandardItem(str(elem)) for elem in [
             submission.username,
             submission.problem_title,
@@ -36,4 +42,3 @@ class SubmissionTable(QTableView):
     
     def clear(self):
         self.model().clear()
-        

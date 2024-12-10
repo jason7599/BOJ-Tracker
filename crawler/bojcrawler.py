@@ -58,7 +58,6 @@ def boj_get_submissions(username: str, max_cnt = 100, after_time = datetime.min)
 
             problem_tag = entry.find(class_='problem_title')
 
-            problem_id = int(problem_tag.string)
             problem_title = problem_tag['title']
             problem_href = BOJ_BASE_URL + problem_tag['href']
 

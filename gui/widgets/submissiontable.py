@@ -1,5 +1,6 @@
+from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QDesktopServices
 
 from common.bojsubmission import BOJSubmission
 
@@ -22,18 +23,26 @@ class SubmissionTable(QTableView):
         # auto resize columns to fit window
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
-    # todo: href on problem_title
     # todo: problem icon along problem_title
     # todo: more readable submit_time
+    # todo: colored result_str
     def add(self, submission: BOJSubmission):
 
-        row = [QStandardItem(str(elem)) for elem in [
-            submission.username,
-            submission.problem_title,
-            submission.result_str,
-            submission.submit_time
-        ]]
-        self.model().appendRow(row)
+        username_item = QStandardItem(submission.username)
+
+        problem_item = QStandardItem(submission.problem_title)
+        problem_item.setData(submission.problem_href, Qt.UserRole)
+
+        result_item = QStandardItem(submission.result_str)
+
+        time_item = QStandardItem(str(submission.submit_time))
+
+        self.model().appendRow([
+            username_item,
+            problem_item,
+            result_item,
+            time_item
+        ])
 
     # todo: probably exists a better method for adding multiple rows
     def add_all(self, submissions: list[BOJSubmission]):
@@ -42,3 +51,13 @@ class SubmissionTable(QTableView):
     
     def clear(self):
         self.model().clear()
+
+    # open link
+    def mousePressEvent(self, event):
+        index = self.indexAt(event.pos())
+
+        if index.isValid() and COLUMN_LABELS[index.column()] == "Problem": # kinda shitty
+            href = index.data(Qt.UserRole)
+            QDesktopServices.openUrl(QUrl(href))
+
+        return super().mousePressEvent(event)

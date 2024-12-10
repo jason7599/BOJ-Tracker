@@ -66,7 +66,6 @@ def boj_get_submissions(username: str, max_cnt = 100, after_time = datetime.min)
 
             submission = BOJSubmission(username,
                                        submit_id,
-                                       problem_id,
                                        problem_title,
                                        problem_href,
                                        result_str,

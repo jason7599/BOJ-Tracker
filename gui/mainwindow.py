@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton
 
 from gui.widgets.submissiontable import SubmissionTable
 
+from crawler.bojcrawler import boj_user_exists, boj_get_submissions
+
 UI_PATH = "gui/ui/main.ui"
 
 WINDOW_TITLE = "BOJ Tracker"
@@ -26,8 +28,10 @@ class MainWindow(QMainWindow):
         self.refresh_button.clicked.connect(self.refresh)
 
     def open_settings(self):
-        print('open_settings')
+        submissions = boj_get_submissions('shhhhzzang', max_cnt=10)
+        self.submission_table.add_all(submissions)
     
     def refresh(self):
+        self.submission_table.clear()
         print('refresh!')
         

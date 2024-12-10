@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QIcon
 
 from common.bojsubmission import BOJSubmission
 
@@ -20,5 +20,20 @@ class SubmissionTable(QTableView):
         # auto resize columns to fit window
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
-    def add_submission(self, submission: BOJSubmission):
-        ...
+    def add(self, submission: BOJSubmission):
+        row = [QStandardItem(str(elem)) for elem in [
+            submission.username,
+            submission.problem_title,
+            submission.result_str,
+            submission.submit_time
+        ]]
+        self.model().appendRow(row)
+
+    # todo: probably exists a better method for adding multiple rows
+    def add_all(self, submissions: list[BOJSubmission]):
+        for submission in submissions:
+            self.add(submission)
+    
+    def clear(self):
+        self.model().clear()
+        

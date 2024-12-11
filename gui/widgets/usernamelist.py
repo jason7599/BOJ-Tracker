@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 
 from gui.widgets.usernameitem import UsernameItem
 
+from common.datastore import DataStore
+
 # TODO: prettier entries
 class UsernameList(QListWidget):
     def __init__(self, parent=None):
@@ -15,10 +17,14 @@ class UsernameList(QListWidget):
         self.addItem(item)
 
         username_item = UsernameItem(username,
-                                     on_remove=lambda: self.takeItem(self.row(item)),
-                                     on_clicked=lambda: print("hi"),
+                                     on_remove=lambda: self.remove_item(self.row(item)),
+                                     on_clicked=lambda: print("hi"), # TODO: filter....
                                      parent=self)
         
         item.setSizeHint(username_item.sizeHint())
 
         self.setItemWidget(item, username_item)
+
+    def remove_item(self, row: int):
+        del DataStore.tracker_data().usernames[row] # scary...
+        self.takeItem(row)

@@ -17,6 +17,7 @@ class UsernameItem(QWidget):
 
         self.setLayout(layout)
     
+    #TODO: filter.....
     def mousePressEvent(self, event):
         self.on_clicked()
         return super().mouseMoveEvent(event)

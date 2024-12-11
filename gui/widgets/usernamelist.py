@@ -19,9 +19,13 @@ class UsernameList(QListWidget):
         item = QListWidgetItem()
         self.addItem(item)
 
-        username_item = UsernameItem(username, self)
-        item.setSizeHint(username_item.sizeHint())
+        username_item = UsernameItem(username,
+                                     on_remove=lambda: self.takeItem(self.row(item)),
+                                     on_clicked=lambda: print("hi"),
+                                     parent=self)
         
+        item.setSizeHint(username_item.sizeHint())
+
         self.setItemWidget(item, username_item)
 
     def load_usernames(self):

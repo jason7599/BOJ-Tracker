@@ -1,22 +1,19 @@
-from PyQt5.QtWidgets import QListView, QAbstractItemView
+from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
+import common.datastore
+
 # TODO: prettier entries
-class UsernameList(QListView):
+class UsernameList(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         
         # disable edit
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+
+        # ...
+        for username in common.datastore.tracker_data.usernames:
+            self.add_username(username)
         
-        self.setModel(QStandardItemModel(self))
-
-    # TODO: think of a more efficient way
-    def is_username_listed(self, username: str) -> bool:
-        for i in range(self.model().rowCount()):
-            if self.model().item(i).text() == username:
-                return True
-        return False
-
     def add_username(self, username: str):
-        self.model().appendRow(QStandardItem(username))
+        self.addItem(QListWidgetItem(username))

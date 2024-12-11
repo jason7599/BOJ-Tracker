@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
                 return
             
             if boj_user_exists(username):
-                if self.username_list.is_username_listed(username):
+                if username in common.datastore.tracker_data.usernames:
                     self.show_error("Username Already Listed", f"Username {username} is already on the list!")
                 else:
                     self.add_username(username)

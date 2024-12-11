@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
-
-from gui.widgets.usernameitem import UsernameItem
+from PyQt5.QtWidgets import (
+    QWidget, QLabel, QPushButton, QHBoxLayout,
+    QListWidget, QListWidgetItem, QAbstractItemView
+)
 
 from common.datastore import DataStore
 
@@ -16,15 +17,27 @@ class UsernameList(QListWidget):
         item = QListWidgetItem()
         self.addItem(item)
 
-        username_item = UsernameItem(username,
-                                     on_remove=lambda: self.remove_item(self.row(item)),
-                                     on_clicked=lambda: print("hi"), # TODO: filter....
-                                     parent=self)
-        
+        username_item = self.UsernameItem(username, self)
+        # username_item.remove_button.clicked.connect()
+
         item.setSizeHint(username_item.sizeHint())
 
         self.setItemWidget(item, username_item)
 
+    # TODO: FIX THIS UGLY SHIT
     def remove_item(self, row: int):
         del DataStore.tracker_data().usernames[row] # scary...
         self.takeItem(row)
+
+    class UsernameItem(QWidget):
+        def __init__(self, username: str, parent):
+            super().__init__(parent)
+
+            self.username_label = QLabel(username, self)
+            self.remove_button = QPushButton('remove', self)
+
+            layout = QHBoxLayout(self)
+            layout.addWidget(self.username_label)
+            layout.addWidget(self.remove_button)
+
+            self.setLayout(layout)

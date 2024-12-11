@@ -3,6 +3,8 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
 import common.datastore
 
+from gui.widgets.usernameitem import UsernameItem
+
 # TODO: prettier entries
 class UsernameList(QListWidget):
     def __init__(self, parent=None):
@@ -14,7 +16,13 @@ class UsernameList(QListWidget):
         self.load_usernames()
         
     def add_username(self, username: str):
-        self.addItem(QListWidgetItem(username))
+        item = QListWidgetItem()
+        self.addItem(item)
+
+        username_item = UsernameItem(username, self)
+        item.setSizeHint(username_item.sizeHint())
+        
+        self.setItemWidget(item, username_item)
 
     def load_usernames(self):
         for username in common.datastore.tracker_data.usernames:

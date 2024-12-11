@@ -3,23 +3,10 @@ from PyQt5.QtWidgets import QApplication
 
 from gui.mainwindow import MainWindow
 
-import common.datastore
-
-
-def load_data():
-    from common.datahandler import load_tracker_data
-
-    common.datastore.tracker_data = load_tracker_data()
-
-def write_data():
-    from common.datahandler import write_tracker_data
-
-    write_tracker_data(common.datastore.tracker_data)
-
+from common.datastore import DataStore
 
 def main():
-    load_data()
-
+    DataStore.initialize()
     print("init done")
 
     app = QApplication(sys.argv)
@@ -29,8 +16,7 @@ def main():
 
     exit_code = app.exec_()
 
-    write_data()
-
+    DataStore.finalize()
     print("cleanup done")
 
     sys.exit(exit_code)

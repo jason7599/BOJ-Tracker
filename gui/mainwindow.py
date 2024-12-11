@@ -6,9 +6,9 @@ from gui.widgets.submissiontable import SubmissionTable
 from gui.widgets.adduserdialog import AddUserDialog
 from gui.widgets.usernamelist import UsernameList
 
-import common.datastore
-
 from crawler.bojcrawler import boj_user_exists, boj_get_submissions
+
+from common.datastore import DataStore
 
 UI_PATH = "gui/ui/main.ui"
 
@@ -35,6 +35,12 @@ class MainWindow(QMainWindow):
         self.add_user_button = self.findChild(QPushButton, 'add_user_button')
         self.add_user_button.clicked.connect(self.open_add_user_popup)
 
+        self.populate_data()
+
+    def populate_data(self):
+        for username in DataStore.tracker_data().usernames:
+            self.username_list.add_username_item(username)
+
     def open_settings(self):
         submissions = boj_get_submissions('shhhhzzang', max_cnt=20)
         self.submission_table.add_all(submissions)
@@ -51,16 +57,13 @@ class MainWindow(QMainWindow):
                 return
             
             if boj_user_exists(username):
-                if username in common.datastore.tracker_data.usernames:
+                if username in DataStore.tracker_data().usernames: # this is very slow
                     self.show_error("Username Already Listed", f"Username {username} is already on the list!")
                 else:
-                    self.add_username(username)
+                    DataStore.tracker_data().usernames.append(username)
+                    self.username_list.add_username_item(username)
             else:
                 self.show_error("Username Not Found", f"Username {username} was not found!")
-
-    def add_username(self, username):
-        common.datastore.tracker_data.usernames.append(username)
-        self.username_list.add_username(username)
 
     def show_error(self, title: str, message: str):
         QMessageBox.warning(self, title, message)

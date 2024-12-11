@@ -26,7 +26,7 @@ class SubmissionTable(QTableView):
     # TODO: problem icon along problem_title
     # TODO: more readable submit_time
     # TODO: colored result_str
-    def add(self, submission: BOJSubmission):
+    def add_submission(self, submission: BOJSubmission):
 
         username_item = QStandardItem(submission.username)
 
@@ -47,7 +47,7 @@ class SubmissionTable(QTableView):
     # TODO: probably exists a better method for adding multiple rows
     def add_all(self, submissions: list[BOJSubmission]):
         for submission in submissions:
-            self.add(submission)
+            self.add_submission(submission)
     
     def clear(self):
         self.model().clear()

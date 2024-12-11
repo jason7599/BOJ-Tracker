@@ -40,13 +40,14 @@ class MainWindow(QMainWindow):
     def populate_data(self):
         for username in DataStore.tracker_data().usernames:
             self.username_list.add_username_item(username)
+        # TODO: populate submission table
 
     def open_settings(self):
-        submissions = boj_get_submissions('shhhhzzang', max_cnt=20)
-        self.submission_table.add_all(submissions)
+        print('settings!')
     
     def refresh(self):
-        self.submission_table.clear()
+        submissions = boj_get_submissions(DataStore.tracker_data().usernames)
+        self.submission_table.add_all(submissions)
         print('refresh!')
     
     def open_add_user_popup(self):

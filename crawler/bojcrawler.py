@@ -25,7 +25,17 @@ def boj_user_exists(username: str) -> bool:
     return bool(response) # True if status_code is between 200 and 399
 
 
-def boj_get_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_time = datetime.min) -> list[BOJSubmission]:
+def boj_get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:
+    res: list[BOJSubmission] = []
+    for username in usernames:
+        res += boj_get_user_submissions(username, 25, after_time)
+    
+    res.sort(key=lambda x: x.submit_time, reverse=True) # latest first
+
+    return res
+
+
+def boj_get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_time = datetime.min) -> list[BOJSubmission]:
 
     url = INIT_SEARCH_URL + username
 

@@ -14,7 +14,6 @@ UI_PATH = "gui/ui/main.ui"
 
 WINDOW_TITLE = "BOJ Tracker"
 
-# TODO: populate mainwindow widgets (submissiontable, userlistview)
 class MainWindow(QMainWindow):
     def __init__(self, ):
         super().__init__()
@@ -35,7 +34,6 @@ class MainWindow(QMainWindow):
 
         self.add_user_button = self.findChild(QPushButton, 'add_user_button')
         self.add_user_button.clicked.connect(self.open_add_user_popup)
-
 
     def open_settings(self):
         submissions = boj_get_submissions('shhhhzzang', max_cnt=20)

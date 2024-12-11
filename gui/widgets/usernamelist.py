@@ -11,9 +11,11 @@ class UsernameList(QListWidget):
         # disable edit
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
-        # ...
-        for username in common.datastore.tracker_data.usernames:
-            self.add_username(username)
+        self.load_usernames()
         
     def add_username(self, username: str):
         self.addItem(QListWidgetItem(username))
+
+    def load_usernames(self):
+        for username in common.datastore.tracker_data.usernames:
+            self.add_username(username)

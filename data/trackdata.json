@@ -1,7 +1,33 @@
 {
-    "last_updated": "2024-12-10 21:13:04",
+    "last_updated": "2024-12-12T19:16:49.855357",
     "update_interval_seconds": 5,
     "usernames": [
-        "jason7599"
+        "kuhyaku",
+        "jw030411",
+        "gimione",
+        "poetdeaths"
+    ],
+    "submissions": [
+        {
+            "username": "gimione",
+            "problem_title": "\ud0b9, \ud038, \ub8e9, \ube44\uc20d, \ub098\uc774\ud2b8, \ud3f0",
+            "problem_href": "https://www.acmicpc.net/problem/3003",
+            "result": "\ud2c0\ub838\uc2b5\ub2c8\ub2e4",
+            "time": "2024-12-12T19:16:32"
+        },
+        {
+            "username": "poetdeaths",
+            "problem_title": "\ub0b4\ub9ac\ub9c9 \uae38",
+            "problem_href": "https://www.acmicpc.net/problem/1520",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-12T19:16:34"
+        },
+        {
+            "username": "jw030411",
+            "problem_title": "AC",
+            "problem_href": "https://www.acmicpc.net/problem/5430",
+            "result": "\ub7f0\ud0c0\uc784 \uc5d0\ub7ec\u00a0(ValueError)",
+            "time": "2024-12-12T19:15:35"
+        }
     ]
 }

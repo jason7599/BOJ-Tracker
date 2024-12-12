@@ -37,7 +37,8 @@ class SubmissionTable(QTableView):
 
         time_item = QStandardItem(str(submission.submit_time))
 
-        self.model().appendRow([
+        self.model().insertRow(0, 
+        [
             username_item,
             problem_item,
             result_item,
@@ -51,7 +52,7 @@ class SubmissionTable(QTableView):
     
     def clear(self):
         self.model().clear()
-        self.model().setHorizontalHeaderLabels(COLUMN_LABELS) # stupid
+        self.model().setHorizontalHeaderLabels(COLUMN_LABELS) # TODO: stupid
 
     # open link
     def mousePressEvent(self, event):

@@ -15,7 +15,6 @@ class UsernameList(QListWidget):
 
     def add_username_item(self, username: str):
         item = QListWidgetItem()
-        # item.setData(0, username)
         self.addItem(item)
 
         username_item = self.UsernameItem(username, self)

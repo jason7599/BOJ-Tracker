@@ -30,7 +30,7 @@ def get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJ
     for username in usernames:
         res += get_user_submissions(username, 25, after_time)
     
-    res.sort(key=lambda x: x.submit_time, reverse=True) # latest first
+    res.sort(key=lambda x: x.submit_time)# reverse=True) # latest first
 
     return res
 
@@ -67,7 +67,7 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
                 done = True
                 break
 
-            submit_id = int(entry['id'].removeprefix(SUBMIT_TAG_ID_PREFIX))
+            # submit_id = int(entry['id'].removeprefix(SUBMIT_TAG_ID_PREFIX))
 
             problem_tag = entry.find(class_='problem_title')
 
@@ -77,7 +77,6 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
             result_str = entry.find(class_='result').string 
 
             submission = BOJSubmission(username,
-                                       submit_id,
                                        problem_title,
                                        problem_href,
                                        result_str,

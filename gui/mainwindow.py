@@ -16,36 +16,37 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
 
         self.controller = controller
+        self.controller.sig_error.connect(self.show_error)
 
         loadUi(UI_PATH, self)
 
         self.setWindowTitle(WINDOW_TITLE)
 
         self.submission_table = self.findChild(SubmissionTable, 'submission_table')
+        self.controller.sig_submissions_added.connect(self.submission_table.add_all)
 
         self.settings_button = self.findChild(QPushButton, 'settings_button')
         self.settings_button.clicked.connect(self.open_settings)
 
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
-        self.refresh_button.clicked.connect(self.refresh)
+        self.refresh_button.clicked.connect(self.controller.update_submissions)
 
         self.username_list = self.findChild(UsernameList, 'username_list')
-        self.username_list.controller = self.controller #..
+
+        # i despise this but i see no other way. I can't use ctor because it's linked thru the ui file.
+        # well it works, so let it be
+        self.username_list.controller = self.controller 
+        self.controller.sig_username_added.connect(self.username_list.add_username_item)
 
         self.add_user_button = self.findChild(QPushButton, 'add_user_button')
         self.add_user_button.clicked.connect(self.add_user_dialog)
 
-        self.controller.sig_username_added.connect(self.username_list.add_username_item)
-        self.controller.sig_error.connect(self.show_error)
 
         self.controller.populate_gui()
 
     def open_settings(self):
         print('settings!')
-    
-    def refresh(self):
-        print('refresh!')
-    
+     
     def add_user_dialog(self):
         dialog = AddUserDialog(self)
 

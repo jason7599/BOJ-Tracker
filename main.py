@@ -8,7 +8,7 @@ def main():
     app = QApplication(sys.argv)
 
     controller = AppController()
-    AppController.initialize()
+    controller.initialize()
 
     window = MainWindow(controller)
     window.show()

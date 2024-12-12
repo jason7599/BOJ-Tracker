@@ -9,8 +9,7 @@ from common.bojsubmission import BOJSubmission
 class AppController(QObject):
     # signals
     sig_username_added = pyqtSignal(str)
-    sig_username_removed = pyqtSignal(str)
-    sig_submissions_added = pyqtSignal(list[BOJSubmission])
+    sig_submissions_added = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
 
     def __init__(self):
@@ -23,6 +22,7 @@ class AppController(QObject):
         DataStore.write_tracker_data(self.tracker_data)
     
     # populate gui elements (submission table, username list) after gui initialized
+    # TODO: submissions table too
     def populate_gui(self):
         for username in self.tracker_data.usernames:
             self.sig_username_added.emit(username)
@@ -38,4 +38,6 @@ class AppController(QObject):
 
         self.tracker_data.usernames.append(username) # TODO: sort?
         self.sig_username_added.emit(username)
-        
+    
+    def remove_username(self, username: str):
+        self.tracker_data.usernames.remove(username)

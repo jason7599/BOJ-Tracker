@@ -18,24 +18,24 @@ SUBMIT_TAG_ID_PREFIX = "solution-"
 
 DEFAULT_MAX_FETCH_CNT = 200
 
-def boj_user_exists(username: str) -> bool:
+def user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
     # Weird. I swear to god it used to return 200, but now it seems to return 202.
     # return response.status_code == 200
     return bool(response) # True if status_code is between 200 and 399
 
 
-def boj_get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:
+def get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:
     res: list[BOJSubmission] = []
     for username in usernames:
-        res += boj_get_user_submissions(username, 25, after_time)
+        res += get_user_submissions(username, 25, after_time)
     
     res.sort(key=lambda x: x.submit_time, reverse=True) # latest first
 
     return res
 
 
-def boj_get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_time = datetime.min) -> list[BOJSubmission]:
+def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_time = datetime.min) -> list[BOJSubmission]:
 
     url = INIT_SEARCH_URL + username
 

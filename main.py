@@ -1,24 +1,21 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 
+from controllers.appcontroller import AppController
 from gui.mainwindow import MainWindow
 
-from common.datastore import DataStore
-
 def main():
-    DataStore.initialize()
-    print("init done")
-
     app = QApplication(sys.argv)
 
-    window = MainWindow()
+    controller = AppController()
+    AppController.initialize()
+
+    window = MainWindow(controller)
     window.show()
 
     exit_code = app.exec_()
-
-    DataStore.finalize()
-    print("cleanup done")
-
+    
+    controller.finalize()
     sys.exit(exit_code)
 
 

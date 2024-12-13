@@ -5,6 +5,11 @@ from common.bojsubmission import BOJSubmission
 
 @dataclass
 class AppData:
+
+    INTERVAL_OPTIONS = [
+        "5 seconds", "10 seconds", "15 seconds", "30 seconds", "60 seconds"
+    ]
+
     last_updated: datetime
     do_autorefresh: bool
     update_interval_idx: int

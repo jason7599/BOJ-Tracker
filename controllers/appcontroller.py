@@ -31,7 +31,11 @@ class AppController(QObject):
             self.sig_username_added.emit(username)
         self.sig_submissions_added.emit(self.appdata.submissions)
 
-        # self.sig_refresh_options_loaded.emit(self.trak)
+        self.sig_refresh_options_loaded.emit(
+            self.appdata.do_autorefresh,
+            self.appdata.INTERVAL_OPTIONS,
+            self.appdata.update_interval_idx
+        )
 
 
     def set_autorefresh(self, b: bool):
@@ -50,7 +54,7 @@ class AppController(QObject):
         self.appdata.usernames.append(username) # TODO: sort?
         self.sig_username_added.emit(username)
     
-    # TODO: horribly unoptimized.. maybe not. runs pretty fast ngl
+    # horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):
         self.appdata.usernames.remove(username)
 

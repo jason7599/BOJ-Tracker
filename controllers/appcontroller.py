@@ -48,12 +48,8 @@ class AppController(QObject):
         # TODO: initial scraping
 
         self.set_refresh_countdown(self.selected_interval())
-
-        if self.appdata.do_autorefresh:
+        if self.appdata.do_autorefresh and len(self.appdata.usernames) > 0:
             self.countdown_timer.start()
-
-    def selected_interval(self):
-        return self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx]
 
     def start_crawling(self):
 
@@ -89,11 +85,7 @@ class AppController(QObject):
         self.appdata.submissions = self.appdata.submissions + new_submissions
         self.sig_submissions_added.emit(new_submissions)
 
-        # restart timer
-        self.set_refresh_countdown(self.selected_interval())
-
-        if self.appdata.do_autorefresh:
-            self.countdown_timer.start()
+        self.reset_timer()
 
         self.sig_crawling_finished.emit()
 
@@ -116,8 +108,13 @@ class AppController(QObject):
             self.crawler_thread.wait()
             self.crawler_thread = None
 
-    def start_timer(self):
-        self.countdown_timer.start()
+    def selected_interval(self):
+        return self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx]
+    
+    def reset_timer(self):
+        self.set_refresh_countdown(self.selected_interval())
+        if self.appdata.do_autorefresh and len(self.appdata.usernames) > 0:
+            self.countdown_timer.start()
 
     def countdown(self):
         if self.refresh_countdown == 0:
@@ -133,16 +130,14 @@ class AppController(QObject):
         self.appdata.do_autorefresh = b
         if not b:
             self.countdown_timer.stop()
-        else:
+        elif len(self.appdata.usernames) > 0:
             self.countdown_timer.start()
 
     def set_refresh_interval(self, idx: int):
         if self.appdata.update_interval_idx != idx: #  inevitably gets called on init due to sig_refresh_options_loaded 
             self.countdown_timer.stop()
-            self.set_refresh_countdown(self.appdata.INTERVAL_OPTIONS[idx])
             self.appdata.update_interval_idx = idx
-            if self.appdata.do_autorefresh:
-                self.countdown_timer.start()
+            self.reset_timer()
 
     def add_username(self, username: str):
         if username in self.appdata.usernames:
@@ -155,6 +150,9 @@ class AppController(QObject):
 
         self.appdata.usernames.append(username) # TODO: sort?
         self.sig_username_added.emit(username)
+        
+        if len(self.appdata.usernames) == 1:
+            self.reset_timer()
     
     # horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):
@@ -166,6 +164,8 @@ class AppController(QObject):
         ]
 
         self.sig_submissions_changed.emit(self.appdata.submissions)
+
+
 
     def write_appdata(self):
         DataStore.write_appdata(self.appdata)

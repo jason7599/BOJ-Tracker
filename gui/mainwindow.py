@@ -1,5 +1,6 @@
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QMessageBox, QLabel, QComboBox, QCheckBox
+from PyQt5.QtCore import Qt, QTimer
 
 from controllers.appcontroller import AppController
 
@@ -26,9 +27,6 @@ class MainWindow(QMainWindow):
         self.controller.sig_submissions_added.connect(self.submission_table.add_all)
         self.controller.sig_submissions_changed.connect(self.submission_table.set_submissions)
 
-        self.settings_button = self.findChild(QPushButton, 'settings_button')
-        self.settings_button.clicked.connect(self.open_settings)
-
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
         self.refresh_button.clicked.connect(self.controller.update_submissions)
 
@@ -42,12 +40,30 @@ class MainWindow(QMainWindow):
         self.add_user_button = self.findChild(QPushButton, 'add_user_button')
         self.add_user_button.clicked.connect(self.add_user_dialog)
 
+        self.last_updated_label = self.findChild(QLabel, 'last_updated_label')
 
+        self.auto_refresh_button = self.findChild(QCheckBox, 'auto_refresh_button')
+        self.auto_refresh_button.stateChanged.connect(self.set_autorefresh)
+
+        self.interval_combo_box = self.findChild(QComboBox, 'interval_combo_box')
+        self.interval_combo_box.addItems([
+            "5 seconds", "10 seconds", "15 seconds", "30 seconds", "60 seconds"
+        ])
+
+        self.refresh_timer = QTimer()
+        # self.controller.sig_refresh_interval_set.connect(
+            
+        # )
         self.controller.on_gui_init()
 
-    def open_settings(self):
-        print('settings!')
-     
+
+    def set_autorefresh(self, state):
+        if state == Qt.Checked:
+            self.interval_combo_box.setEnabled(True)
+        else:
+            self.interval_combo_box.setEnabled(False)
+
+
     def add_user_dialog(self):
         dialog = AddUserDialog(self)
 

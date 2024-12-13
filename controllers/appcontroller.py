@@ -13,6 +13,7 @@ class AppController(QObject):
     sig_submissions_added = pyqtSignal(list)
     sig_submissions_changed = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
+    sig_refresh_interval_set = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -28,6 +29,7 @@ class AppController(QObject):
         for username in self.tracker_data.usernames:
             self.sig_username_added.emit(username)
         self.sig_submissions_added.emit(self.tracker_data.submissions)
+        self.sig_refresh_interval_set.emit(self.tracker_data.update_interval_seconds)
 
     def add_username(self, username: str):
         if username in self.tracker_data.usernames:

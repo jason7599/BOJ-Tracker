@@ -16,6 +16,7 @@ class AppController(QObject):
     sig_refresh_options_loaded = pyqtSignal(bool, list, int, datetime)
     sig_crawling_started = pyqtSignal()
     sig_crawling_finished = pyqtSignal()
+    sig_countdown_update = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -27,9 +28,10 @@ class AppController(QObject):
 
         self.autorefresh_error = False
 
-    def write_appdata(self):
-        DataStore.write_appdata(self.appdata)
-    
+        self.countdown_timer = QTimer()
+        self.countdown_timer.setInterval(1000)
+        self.countdown_timer.timeout.connect(self.countdown)
+
     # populate gui elements (submission table, username list) after gui initialized
     def post_gui_init(self):
         for username in self.appdata.usernames:
@@ -43,17 +45,23 @@ class AppController(QObject):
             self.appdata.last_updated
         )
 
-        # TODO: initial scraping!
+        # TODO: initial scraping
 
-        self.refresh_timer = QTimer()
-        self.refresh_timer.setInterval(self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx] * 1000)
+        self.set_refresh_countdown(self.selected_interval())
 
+        if self.appdata.do_autorefresh:
+            self.countdown_timer.start()
+
+    def selected_interval(self):
+        return self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx]
 
     def start_crawling(self):
 
         if self.crawler_thread and self.crawler_thread.isRunning():
             print("crawler thread already running!")
             return
+
+        self.countdown_timer.stop()
 
         self.sig_crawling_started.emit()
 
@@ -73,15 +81,19 @@ class AppController(QObject):
 
     def on_crawling_finished(self, new_submissions: list[BOJSubmission]):
         
-        # TODO: reenable refresh button
-        
-        self.cleanup_crawler_thread()        
+        self.cleanup_crawler_thread()
 
         self.autorefresh_error = False
 
         # TODO: Maybe these 2 lines are what should be done thru threads..
         self.appdata.submissions = self.appdata.submissions + new_submissions
         self.sig_submissions_added.emit(new_submissions)
+
+        # restart timer
+        self.set_refresh_countdown(self.selected_interval())
+
+        if self.appdata.do_autorefresh:
+            self.countdown_timer.start()
 
         self.sig_crawling_finished.emit()
 
@@ -90,9 +102,10 @@ class AppController(QObject):
         self.cleanup_crawler_thread()
 
         if not self.autorefresh_error:
+            self.autorefresh_error = True
             self.sig_error.emit("Failed to fetch submissions!", str(e)) # show error box in mainwindow
 
-        # TODO: stop refresh timer to prevent harassing user with QMessageBoxes
+        self.sig_crawling_finished.emit()
 
     def cleanup_crawler_thread(self):
         if self.crawler_thread:
@@ -103,13 +116,33 @@ class AppController(QObject):
             self.crawler_thread.wait()
             self.crawler_thread = None
 
+    def start_timer(self):
+        self.countdown_timer.start()
+
+    def countdown(self):
+        if self.refresh_countdown == 0:
+            self.start_crawling()
+        else:
+            self.set_refresh_countdown(self.refresh_countdown - 1)
+
+    def set_refresh_countdown(self, val: int):
+        self.refresh_countdown = val
+        self.sig_countdown_update.emit(val)
+
     def set_autorefresh(self, b: bool):
         self.appdata.do_autorefresh = b
+        if not b:
+            self.countdown_timer.stop()
+        else:
+            self.countdown_timer.start()
 
     def set_refresh_interval(self, idx: int):
-        new_interval = self.appdata.INTERVAL_OPTIONS[idx]
         if self.appdata.update_interval_idx != idx: #  inevitably gets called on init due to sig_refresh_options_loaded 
+            self.countdown_timer.stop()
+            self.set_refresh_countdown(self.appdata.INTERVAL_OPTIONS[idx])
             self.appdata.update_interval_idx = idx
+            if self.appdata.do_autorefresh:
+                self.countdown_timer.start()
 
     def add_username(self, username: str):
         if username in self.appdata.usernames:
@@ -133,3 +166,6 @@ class AppController(QObject):
         ]
 
         self.sig_submissions_changed.emit(self.appdata.submissions)
+
+    def write_appdata(self):
+        DataStore.write_appdata(self.appdata)

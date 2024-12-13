@@ -62,13 +62,15 @@ class MainWindow(QMainWindow):
         self.interval_combo_box = self.findChild(QComboBox, 'interval_combo_box')
         self.interval_combo_box.currentIndexChanged.connect(self.controller.set_refresh_interval)
 
-        self.refresh_countdown = self.findChild(QLCDNumber, 'refresh_countdown')
-        self.refresh_countdown.setNumDigits(2)
+        self.refresh_countdown_display = self.findChild(QLCDNumber, 'refresh_countdown_display')
+        # self.refresh_countdown_display.setNumDigits(2)
+        self.controller.sig_countdown_update.connect(
+            lambda val: self.refresh_countdown_display.display(val)
+        )
 
         self.controller.sig_refresh_options_loaded.connect(self.set_refresh_options)
 
         self.controller.post_gui_init()
-
 
     def set_refresh_options(self, 
                             do_autorefresh: bool, 
@@ -87,10 +89,10 @@ class MainWindow(QMainWindow):
 
     def set_autorefresh(self, b):
         self.interval_combo_box.setEnabled(b)
-        self.refresh_countdown.setEnabled(b)
+        self.refresh_countdown_display.setEnabled(b)
         self.controller.set_autorefresh(b)
 
-
+    
     def add_user_dialog(self):
         dialog = AddUserDialog(self)
 

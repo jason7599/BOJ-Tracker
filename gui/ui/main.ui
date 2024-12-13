@@ -71,7 +71,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLCDNumber" name="refresh_countdown"/>
+           <widget class="QLCDNumber" name="refresh_countdown_display"/>
           </item>
           <item>
            <widget class="QPushButton" name="refresh_button">

@@ -57,7 +57,6 @@ class AppController(QObject):
     def update_submissions(self, show_error_message_box=True):
         try:
             new_submissions = BOJCrawler.get_submissions(self.tracker_data.usernames, self.tracker_data.last_updated)
-            print(len(new_submissions), new_submissions)
         except Exception as e:
             if show_error_message_box:
                 self.sig_error.emit("Failed to fetch submissions!", str(e))
@@ -65,7 +64,7 @@ class AppController(QObject):
             # TODO: stop refresh timer to prevent harassing user with QMessageBoxes
             return
         
-        self.tracker_data.last_updated = datetime.now()
+        # self.tracker_data.last_updated = datetime.now() #TODO: TEMP DISABLED FOR DEBUG
         self.tracker_data.submissions = new_submissions + self.tracker_data.submissions 
         self.sig_submissions_added.emit(new_submissions)
     

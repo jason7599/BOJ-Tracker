@@ -158,6 +158,10 @@ class AppController(QObject):
     def remove_username(self, username: str):
         self.appdata.usernames.remove(username)
 
+        if not self.appdata.usernames:
+            self.countdown_timer.stop()
+            self.reset_timer()
+
         self.appdata.submissions = [
             submission for submission in self.appdata.submissions
             if submission.username != username

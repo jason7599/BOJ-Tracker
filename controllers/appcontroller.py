@@ -1,10 +1,11 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from datetime import datetime
 
-import crawler.bojcrawler as BOJCrawler
+from PyQt5.QtCore import QObject, pyqtSignal, QTimer, QThread
 
 import common.datastore as DataStore
-from common.appdata import AppData
 from common.bojsubmission import BOJSubmission
+import crawler.bojcrawler as BOJCrawler 
+from crawler.crawlerworker import CrawlerWorker
 
 class AppController(QObject):
     # signals
@@ -12,19 +13,23 @@ class AppController(QObject):
     sig_submissions_added = pyqtSignal(list)
     sig_submissions_changed = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
-    sig_refresh_options_loaded = pyqtSignal(bool, list, int)
+    sig_refresh_options_loaded = pyqtSignal(bool, list, int, datetime)
 
     def __init__(self):
         super().__init__()
 
-    def initialize(self):
         self.appdata = DataStore.get_appdata()
 
-    def finalize(self):
+        self.crawler_worker: CrawlerWorker = None
+        self.crawler_thread: QThread = None
+
+        self.autorefresh_error = False
+
+    def write_appdata(self):
         DataStore.write_appdata(self.appdata)
     
     # populate gui elements (submission table, username list) after gui initialized
-    def on_gui_init(self):
+    def post_gui_init(self):
         for username in self.appdata.usernames:
             self.sig_username_added.emit(username)
         self.sig_submissions_added.emit(self.appdata.submissions)
@@ -32,12 +37,66 @@ class AppController(QObject):
         self.sig_refresh_options_loaded.emit(
             self.appdata.do_autorefresh,
             self.appdata.INTERVAL_OPTIONS,
-            self.appdata.update_interval_idx
+            self.appdata.update_interval_idx,
+            self.appdata.last_updated
         )
+
+        # TODO: initial scraping!
+
+        self.refresh_timer = QTimer()
+        self.refresh_timer.setInterval(self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx] * 1000)
+
+
+    def start_crawling(self):
+
+        if self.crawler_thread and self.crawler_thread.isRunning():
+            print("crawler thread already running!")
+            return
+    
+        # TODO: disable refresh button
+
+        self.crawler_worker = CrawlerWorker()
+        self.crawler_thread = QThread()
+        self.crawler_worker.moveToThread(self.crawler_thread)
+
+        self.crawler_worker.sig_done.connect(self.on_crawling_finished)
+        self.crawler_worker.sig_error.connect(self.on_crawling_error)
+
+        self.crawler_thread.started.connect(
+            lambda: self.crawler_worker.crawl(self.appdata.usernames)
+        )
+        self.crawler_thread.finished.connect(self.crawler_worker.deleteLater)
+
+        self.crawler_thread.start()
+
+    def on_crawling_finished(self, new_submissions: list[BOJSubmission]):
+        
+        # TODO: reenable refresh button
+        
+        self.cleanup_crawler_thread()        
+
+        self.autorefresh_error = False
+        self.appdata.submissions = self.appdata.submissions + new_submissions
+        self.sig_submissions_added.emit(new_submissions)
+
+    def on_crawling_error(self, e: Exception):
+        
+        self.cleanup_crawler_thread()
+
+        if not self.autorefresh_error:
+            self.sig_error.emit("Failed to fetch submissions!", str(e)) # show error box in mainwindow
+
+        # TODO: stop refresh timer to prevent harassing user with QMessageBoxes
+
+    def cleanup_crawler_thread(self):
+        if self.crawler_thread:
+            self.crawler_thread.quit()
+            self.crawler_thread.wait()
+            self.crawler_thread = None
+            self.crawler_worker = None
 
     def set_autorefresh(self, b: bool):
         self.appdata.do_autorefresh = b
-
 
     def set_refresh_interval(self, idx: int):
         new_interval = self.appdata.INTERVAL_OPTIONS[idx]
@@ -49,7 +108,7 @@ class AppController(QObject):
             self.sig_error.emit("Username Already Listed", f"Username {username} is already on the list!")
             return
         
-        if not BOJCrawler.user_exists(username):
+        if not BOJCrawler.user_exists(username): # TODO: single thread
             self.sig_error.emit("Username Not Found", f"Username {username} was not found!")
             return
 
@@ -66,19 +125,3 @@ class AppController(QObject):
         ]
 
         self.sig_submissions_changed.emit(self.appdata.submissions)
-
-    # TODO: in desperate need of threading.
-    def update_submissions(self, show_error_message_box=True):
-        try:
-            new_submissions = BOJCrawler.get_submissions(self.appdata.usernames, self.appdata.last_updated)
-        except Exception as e:
-            if show_error_message_box:
-                self.sig_error.emit("Failed to fetch submissions!", str(e))
-
-            # TODO: stop refresh timer to prevent harassing user with QMessageBoxes
-            return
-        
-        # self.tracker_data.last_updated = datetime.now() #TODO: TEMP DISABLED FOR DEBUG
-        self.appdata.submissions = new_submissions + self.appdata.submissions 
-        self.sig_submissions_added.emit(new_submissions)
-    

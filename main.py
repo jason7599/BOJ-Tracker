@@ -8,14 +8,13 @@ def main():
     app = QApplication(sys.argv)
 
     controller = AppController()
-    controller.initialize()
 
     window = MainWindow(controller)
     window.show()
 
     exit_code = app.exec_()
     
-    controller.finalize()
+    controller.write_appdata()
     sys.exit(exit_code)
 
 

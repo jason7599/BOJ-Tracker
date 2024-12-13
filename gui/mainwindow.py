@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import (
     QMainWindow, QPushButton, QMessageBox, QLabel, 
     QComboBox, QCheckBox, QLCDNumber
 )
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt
 
 from controllers.appcontroller import AppController
 
@@ -31,7 +33,7 @@ class MainWindow(QMainWindow):
         self.controller.sig_submissions_changed.connect(self.submission_table.set_submissions)
 
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
-        self.refresh_button.clicked.connect(self.controller.update_submissions)
+        self.refresh_button.clicked.connect(self.controller.start_crawling)
 
         self.username_list = self.findChild(UsernameList, 'username_list')
 
@@ -56,20 +58,25 @@ class MainWindow(QMainWindow):
         self.refresh_countdown = self.findChild(QLCDNumber, 'refresh_countdown')
         self.refresh_countdown.setNumDigits(2)
 
-        self.refresh_timer = QTimer()
-
         self.controller.sig_refresh_options_loaded.connect(self.set_refresh_options)
 
-        self.controller.on_gui_init()
+        self.controller.post_gui_init()
 
 
-    def set_refresh_options(self, do_autorefresh: bool, interval_options: list[str], interval_idx: int):
+    def set_refresh_options(self, 
+                            do_autorefresh: bool, 
+                            interval_options: list[str], 
+                            interval_idx: int,
+                            last_updated: datetime):
         self.set_autorefresh(do_autorefresh)
         self.auto_refresh_button.setChecked(do_autorefresh)
         self.interval_combo_box.addItems([
             f"{t} seconds" for t in interval_options
         ])
         self.interval_combo_box.setCurrentIndex(interval_idx)
+        self.last_updated_label.setText(
+            "Last updated: " + str(last_updated.replace(microsecond=0))
+        )
 
     def set_autorefresh(self, b):
         self.interval_combo_box.setEnabled(b)

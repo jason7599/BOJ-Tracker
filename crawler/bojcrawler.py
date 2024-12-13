@@ -24,7 +24,7 @@ def user_exists(username: str) -> bool:
     # return response.status_code == 200
     return bool(response) # True if status_code is between 200 and 399
 
-
+# TODO: optimize
 def get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:
     res: list[BOJSubmission] = []
     for username in usernames:

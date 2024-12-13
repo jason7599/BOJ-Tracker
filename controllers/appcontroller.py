@@ -11,6 +11,7 @@ class AppController(QObject):
     # signals
     sig_username_added = pyqtSignal(str)
     sig_submissions_added = pyqtSignal(list)
+    sig_submissions_changed = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
 
     def __init__(self):
@@ -41,8 +42,16 @@ class AppController(QObject):
         self.tracker_data.usernames.append(username) # TODO: sort?
         self.sig_username_added.emit(username)
     
+    # TODO: horribly unoptimized
     def remove_username(self, username: str):
         self.tracker_data.usernames.remove(username)
+
+        self.tracker_data.submissions = [
+            submission for submission in self.tracker_data.submissions
+            if submission.username != username
+        ]
+
+        self.sig_submissions_changed.emit(self.tracker_data.submissions)
 
     # TODO: in desperate need of threading.
     def update_submissions(self, show_error_message_box=True):

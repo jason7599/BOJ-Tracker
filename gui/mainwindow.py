@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
 
         self.submission_table = self.findChild(SubmissionTable, 'submission_table')
         self.controller.sig_submissions_added.connect(self.submission_table.add_all)
+        self.controller.sig_submissions_changed.connect(self.submission_table.set_submissions)
 
         self.settings_button = self.findChild(QPushButton, 'settings_button')
         self.settings_button.clicked.connect(self.open_settings)

@@ -9,7 +9,7 @@ class UsernameList(QListWidget):
     def __init__(self, parent):
         super().__init__(parent)
         
-        self.controller: AppController = None # dumbass
+        self.controller: AppController = None
         # disable edit
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
@@ -19,14 +19,14 @@ class UsernameList(QListWidget):
 
         username_item = self.UsernameItem(username, self)
         username_item.remove_button.clicked.connect(
-            lambda: self.handle_remove_user(item, username)
+            lambda: self.handle_remove_username(username, item)
         )
         
         item.setSizeHint(username_item.sizeHint())
 
         self.setItemWidget(item, username_item)
-
-    def handle_remove_user(self, item: QListWidgetItem, username: str):
+    
+    def handle_remove_username(self, username:str, item: QListWidgetItem):
         self.controller.remove_username(username)
         self.takeItem(self.row(item))
 

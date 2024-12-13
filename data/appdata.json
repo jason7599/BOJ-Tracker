@@ -180,6 +180,181 @@
             "problem_href": "https://www.acmicpc.net/problem/2079",
             "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
             "time": "2024-12-13T17:05:49"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uac1c\ucf54\uc804\uc7c1",
+            "problem_href": "https://www.acmicpc.net/problem/2325",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-06T14:57:43"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud574\ubc0d \uacbd\ub85c",
+            "problem_href": "https://www.acmicpc.net/problem/2481",
+            "result": "\uba54\ubaa8\ub9ac \ucd08\uacfc",
+            "time": "2024-12-06T16:01:14"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud574\ubc0d \uacbd\ub85c",
+            "problem_href": "https://www.acmicpc.net/problem/2481",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-06T16:15:36"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uc5f0\uc138\ub300\ud559\uad50",
+            "problem_href": "https://www.acmicpc.net/problem/15680",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-07T19:26:33"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ubbf8\ub85c \ubcf4\uc218",
+            "problem_href": "https://www.acmicpc.net/problem/30689",
+            "result": "\ub7f0\ud0c0\uc784 \uc5d0\ub7ec\u00a0(ModuleNotFoundError)",
+            "time": "2024-12-08T16:13:39"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ubbf8\ub85c \ubcf4\uc218",
+            "problem_href": "https://www.acmicpc.net/problem/30689",
+            "result": "\uc2dc\uac04 \ucd08\uacfc",
+            "time": "2024-12-08T16:14:00"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ubbf8\ub85c \ubcf4\uc218",
+            "problem_href": "https://www.acmicpc.net/problem/30689",
+            "result": "\ub7f0\ud0c0\uc784 \uc5d0\ub7ec\u00a0(RecursionError)",
+            "time": "2024-12-08T16:19:47"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ubbf8\ub85c \ubcf4\uc218",
+            "problem_href": "https://www.acmicpc.net/problem/30689",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-08T16:23:19"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ubbf8\ub85c \ubcf4\uc218",
+            "problem_href": "https://www.acmicpc.net/problem/30689",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-08T16:29:37"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uc99d\uac00\ud558\ub294 \uc218",
+            "problem_href": "https://www.acmicpc.net/problem/10573",
+            "result": "\ud2c0\ub838\uc2b5\ub2c8\ub2e4",
+            "time": "2024-12-09T16:17:51"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uc554\ud638",
+            "problem_href": "https://www.acmicpc.net/problem/1855",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-09T16:43:45"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud50c\ub798\ud53c \ubc84\ub4dc \uc2a4\ucf54\uc5b4\ub9c1",
+            "problem_href": "https://www.acmicpc.net/problem/26152",
+            "result": "\ucd9c\ub825 \ucd08\uacfc",
+            "time": "2024-12-10T15:28:33"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud50c\ub798\ud53c \ubc84\ub4dc \uc2a4\ucf54\uc5b4\ub9c1",
+            "problem_href": "https://www.acmicpc.net/problem/26152",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-10T15:56:33"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uc6c0\uc9c1\uc774\ub294 \ubbf8\ub85c \ud0c8\ucd9c",
+            "problem_href": "https://www.acmicpc.net/problem/16954",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-11T14:57:51"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud68c\ubb38",
+            "problem_href": "https://www.acmicpc.net/problem/14561",
+            "result": "\ud2c0\ub838\uc2b5\ub2c8\ub2e4",
+            "time": "2024-12-11T15:29:06"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud68c\ubb38",
+            "problem_href": "https://www.acmicpc.net/problem/14561",
+            "result": "\ucd9c\ub825 \ucd08\uacfc",
+            "time": "2024-12-11T15:32:51"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud68c\ubb38",
+            "problem_href": "https://www.acmicpc.net/problem/14561",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-11T15:33:20"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uc218\ud559 \ubbf8\ub85c",
+            "problem_href": "https://www.acmicpc.net/problem/16475",
+            "result": "\ud2c0\ub838\uc2b5\ub2c8\ub2e4",
+            "time": "2024-12-12T15:12:04"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\uc218\ud559 \ubbf8\ub85c",
+            "problem_href": "https://www.acmicpc.net/problem/16475",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-12T15:22:20"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "Allocation",
+            "problem_href": "https://www.acmicpc.net/problem/23895",
+            "result": "12\uc810",
+            "time": "2024-12-12T15:45:53"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "Plates",
+            "problem_href": "https://www.acmicpc.net/problem/23896",
+            "result": "\ud2c0\ub838\uc2b5\ub2c8\ub2e4",
+            "time": "2024-12-12T16:47:07"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "Plates",
+            "problem_href": "https://www.acmicpc.net/problem/23896",
+            "result": "\ud2c0\ub838\uc2b5\ub2c8\ub2e4",
+            "time": "2024-12-12T16:49:56"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "Plates",
+            "problem_href": "https://www.acmicpc.net/problem/23896",
+            "result": "24\uc810",
+            "time": "2024-12-12T16:52:08"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "Plates",
+            "problem_href": "https://www.acmicpc.net/problem/23896",
+            "result": "24\uc810",
+            "time": "2024-12-12T17:06:41"
+        },
+        {
+            "username": "shhhhzzang",
+            "problem_title": "\ud330\ub9b0\ub4dc\ub86c",
+            "problem_href": "https://www.acmicpc.net/problem/2079",
+            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
+            "time": "2024-12-13T17:05:49"
         }
     ]
 }

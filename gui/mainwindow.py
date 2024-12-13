@@ -35,6 +35,13 @@ class MainWindow(QMainWindow):
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
         self.refresh_button.clicked.connect(self.controller.start_crawling)
 
+        self.controller.sig_crawling_started.connect(
+            lambda: self.refresh_button.setEnabled(False)
+        )
+        self.controller.sig_crawling_finished.connect(
+            lambda: self.refresh_button.setEnabled(True)
+        )
+
         self.username_list = self.findChild(UsernameList, 'username_list')
 
         # i despise this but i see no other way. I can't use ctor because it's linked thru the ui file.

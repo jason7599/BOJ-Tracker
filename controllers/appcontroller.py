@@ -14,6 +14,8 @@ class AppController(QObject):
     sig_submissions_changed = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
     sig_refresh_options_loaded = pyqtSignal(bool, list, int, datetime)
+    sig_crawling_started = pyqtSignal()
+    sig_crawling_finished = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -52,8 +54,8 @@ class AppController(QObject):
         if self.crawler_thread and self.crawler_thread.isRunning():
             print("crawler thread already running!")
             return
-    
-        # TODO: disable refresh button
+
+        self.sig_crawling_started.emit()
 
         self.crawler_worker = CrawlerWorker()
         self.crawler_thread = QThread()
@@ -76,8 +78,12 @@ class AppController(QObject):
         self.cleanup_crawler_thread()        
 
         self.autorefresh_error = False
+
+        # TODO: Maybe these 2 lines are what should be done thru threads..
         self.appdata.submissions = self.appdata.submissions + new_submissions
         self.sig_submissions_added.emit(new_submissions)
+
+        self.sig_crawling_finished.emit()
 
     def on_crawling_error(self, e: Exception):
         
@@ -90,10 +96,12 @@ class AppController(QObject):
 
     def cleanup_crawler_thread(self):
         if self.crawler_thread:
+            if self.crawler_worker:
+                self.crawler_worker.deleteLater()
+                self.crawler_worker = None
             self.crawler_thread.quit()
             self.crawler_thread.wait()
             self.crawler_thread = None
-            self.crawler_worker = None
 
     def set_autorefresh(self, b: bool):
         self.appdata.do_autorefresh = b

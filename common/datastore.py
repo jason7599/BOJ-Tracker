@@ -3,16 +3,16 @@
 import os
 import json
 
-from common.trackerdata import TrackerData
+from common.appdata import AppData
 
-TRACKER_DATA_PATH = "data/trackdata.json"
+APPDATA_PATH = "data/appdata.json"
 
-def get_tracker_data():
-    if os.path.exists(TRACKER_DATA_PATH):
-        with open(TRACKER_DATA_PATH, 'r') as f:
-            return TrackerData.from_json(json.load(f))
-    return TrackerData.empty()
+def get_appdata():
+    if os.path.exists(APPDATA_PATH):
+        with open(APPDATA_PATH, 'r') as f:
+            return AppData.from_json(json.load(f))
+    return AppData.empty()
     
-def write_tracker_data(td: TrackerData):
-    with open(TRACKER_DATA_PATH, 'w') as f:
+def write_appdata(td: AppData):
+    with open(APPDATA_PATH, 'w') as f:
         json.dump(td.to_json(), f, indent=4)

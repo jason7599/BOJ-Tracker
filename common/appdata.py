@@ -4,7 +4,7 @@ from datetime import datetime
 from common.bojsubmission import BOJSubmission
 
 @dataclass
-class TrackerData:
+class AppData:
     last_updated: datetime
     do_autorefresh: bool
     update_interval_idx: int
@@ -14,7 +14,7 @@ class TrackerData:
 
     @staticmethod
     def empty():
-        return TrackerData(
+        return AppData(
             last_updated=datetime.now().replace(microsecond=0),
             do_autorefresh=False,
             update_interval_idx=0,
@@ -24,7 +24,7 @@ class TrackerData:
     
     @staticmethod
     def from_json(json):
-        return TrackerData(
+        return AppData(
             last_updated=datetime.fromisoformat(json['last_updated']),
             do_autorefresh=json['autorefresh'],
             update_interval_idx=int(json['update_interval_idx']),

@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import crawler.bojcrawler as BOJCrawler
 
 import common.datastore as DataStore
-from common.trackerdata import TrackerData
+from common.appdata import AppData
 from common.bojsubmission import BOJSubmission
 
 UPDATE_INTERVAL_OPTIONS = [5, 10, 15, 30, 60]
@@ -20,26 +20,26 @@ class AppController(QObject):
         super().__init__()
 
     def initialize(self):
-        self.tracker_data = DataStore.get_tracker_data()
+        self.appdata = DataStore.get_appdata()
 
     def finalize(self):
-        DataStore.write_tracker_data(self.tracker_data)
+        DataStore.write_appdata(self.appdata)
     
     # populate gui elements (submission table, username list) after gui initialized
     def on_gui_init(self):
-        for username in self.tracker_data.usernames:
+        for username in self.appdata.usernames:
             self.sig_username_added.emit(username)
-        self.sig_submissions_added.emit(self.tracker_data.submissions)
+        self.sig_submissions_added.emit(self.appdata.submissions)
 
         # self.sig_refresh_options_loaded.emit(self.trak)
 
 
     def set_autorefresh(self, b: bool):
-        self.tracker_data.do_autorefresh = b
+        self.appdata.do_autorefresh = b
 
 
     def add_username(self, username: str):
-        if username in self.tracker_data.usernames:
+        if username in self.appdata.usernames:
             self.sig_error.emit("Username Already Listed", f"Username {username} is already on the list!")
             return
         
@@ -47,24 +47,24 @@ class AppController(QObject):
             self.sig_error.emit("Username Not Found", f"Username {username} was not found!")
             return
 
-        self.tracker_data.usernames.append(username) # TODO: sort?
+        self.appdata.usernames.append(username) # TODO: sort?
         self.sig_username_added.emit(username)
     
     # TODO: horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):
-        self.tracker_data.usernames.remove(username)
+        self.appdata.usernames.remove(username)
 
-        self.tracker_data.submissions = [
-            submission for submission in self.tracker_data.submissions
+        self.appdata.submissions = [
+            submission for submission in self.appdata.submissions
             if submission.username != username
         ]
 
-        self.sig_submissions_changed.emit(self.tracker_data.submissions)
+        self.sig_submissions_changed.emit(self.appdata.submissions)
 
     # TODO: in desperate need of threading.
     def update_submissions(self, show_error_message_box=True):
         try:
-            new_submissions = BOJCrawler.get_submissions(self.tracker_data.usernames, self.tracker_data.last_updated)
+            new_submissions = BOJCrawler.get_submissions(self.appdata.usernames, self.appdata.last_updated)
         except Exception as e:
             if show_error_message_box:
                 self.sig_error.emit("Failed to fetch submissions!", str(e))
@@ -73,6 +73,6 @@ class AppController(QObject):
             return
         
         # self.tracker_data.last_updated = datetime.now() #TODO: TEMP DISABLED FOR DEBUG
-        self.tracker_data.submissions = new_submissions + self.tracker_data.submissions 
+        self.appdata.submissions = new_submissions + self.appdata.submissions 
         self.sig_submissions_added.emit(new_submissions)
     

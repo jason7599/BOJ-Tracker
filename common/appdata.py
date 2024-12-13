@@ -6,9 +6,9 @@ from common.bojsubmission import BOJSubmission
 @dataclass
 class AppData:
 
-    INTERVAL_OPTIONS = [
-        "5 seconds", "10 seconds", "15 seconds", "30 seconds", "60 seconds"
-    ]
+    INTERVAL_OPTIONS = [5, 10, 15, 30, 60] # seconds. obviously.
+
+    DEFAULT_INTERVAL_IDX = 4
 
     last_updated: datetime
     do_autorefresh: bool
@@ -17,12 +17,12 @@ class AppData:
     submissions: list[BOJSubmission]
     # TODO: max_history
 
-    @staticmethod
-    def empty():
+    @classmethod
+    def empty(cls):
         return AppData(
             last_updated=datetime.now().replace(microsecond=0),
             do_autorefresh=False,
-            update_interval_idx=0,
+            update_interval_idx=cls.DEFAULT_INTERVAL_IDX,
             usernames=[],
             submissions=[],
         )

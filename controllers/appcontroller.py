@@ -6,8 +6,6 @@ import common.datastore as DataStore
 from common.appdata import AppData
 from common.bojsubmission import BOJSubmission
 
-UPDATE_INTERVAL_OPTIONS = [5, 10, 15, 30, 60]
-
 class AppController(QObject):
     # signals
     sig_username_added = pyqtSignal(str)
@@ -37,10 +35,14 @@ class AppController(QObject):
             self.appdata.update_interval_idx
         )
 
-
     def set_autorefresh(self, b: bool):
         self.appdata.do_autorefresh = b
 
+
+    def set_refresh_interval(self, idx: int):
+        new_interval = self.appdata.INTERVAL_OPTIONS[idx]
+        if self.appdata.update_interval_idx != idx: #  inevitably gets called on init due to sig_refresh_options_loaded 
+            self.appdata.update_interval_idx = idx
 
     def add_username(self, username: str):
         if username in self.appdata.usernames:

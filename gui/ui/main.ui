@@ -37,6 +37,13 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
+           <widget class="QLabel" name="last_updated_label">
+            <property name="text">
+             <string>Last Updated: 2024-12-13 14:48:31</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -48,13 +55,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="last_updated_label">
-            <property name="text">
-             <string>Last Updated: 2024-12-13 14:48:31</string>
-            </property>
-           </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="auto_refresh_button">
@@ -69,6 +69,9 @@
              <bool>false</bool>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QLCDNumber" name="refresh_countdown"/>
           </item>
           <item>
            <widget class="QPushButton" name="refresh_button">

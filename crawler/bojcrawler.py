@@ -67,8 +67,6 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
                 done = True
                 break
 
-            # submit_id = int(entry['id'].removeprefix(SUBMIT_TAG_ID_PREFIX))
-
             problem_tag = entry.find(class_='problem_title')
 
             problem_title = problem_tag['title']

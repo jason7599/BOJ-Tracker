@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QDesktopServices
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QDesktopServices, QColorConstants
 
 from common.bojsubmission import BOJSubmission
 
@@ -34,6 +34,7 @@ class SubmissionTable(QTableView):
         problem_item.setData(submission.problem_href, Qt.UserRole)
 
         result_item = QStandardItem(submission.result_str)
+        # result_item.setData(QColorConstants.Red, Qt.ForegroundRole) # TODO!
 
         time_item = QStandardItem(str(submission.submit_time))
 

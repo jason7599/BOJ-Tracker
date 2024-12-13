@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         self.add_user_button.clicked.connect(self.add_user_dialog)
 
 
-        self.controller.populate_gui()
+        self.controller.on_gui_init()
 
     def open_settings(self):
         print('settings!')

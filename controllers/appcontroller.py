@@ -1,5 +1,5 @@
 from datetime import datetime
-from PyQt5.QtCore import QObject, QTimer, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, QTimer, QThread
 
 import crawler.bojcrawler as BOJCrawler
 
@@ -24,10 +24,9 @@ class AppController(QObject):
         DataStore.write_tracker_data(self.tracker_data)
     
     # populate gui elements (submission table, username list) after gui initialized
-    def populate_gui(self):
+    def on_gui_init(self):
         for username in self.tracker_data.usernames:
             self.sig_username_added.emit(username)
-
         self.sig_submissions_added.emit(self.tracker_data.submissions)
 
     def add_username(self, username: str):

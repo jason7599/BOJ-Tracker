@@ -46,9 +46,7 @@ class MainWindow(QMainWindow):
         self.auto_refresh_button.stateChanged.connect(self.set_autorefresh)
 
         self.interval_combo_box = self.findChild(QComboBox, 'interval_combo_box')
-        self.interval_combo_box.addItems([
-            "5 seconds", "10 seconds", "15 seconds", "30 seconds", "60 seconds"
-        ])
+        # self.interval_combo_box.currentIndexChanged
 
         self.refresh_timer = QTimer()
         # self.controller.sig_refresh_interval_set.connect(
@@ -58,10 +56,9 @@ class MainWindow(QMainWindow):
 
 
     def set_autorefresh(self, state):
-        if state == Qt.Checked:
-            self.interval_combo_box.setEnabled(True)
-        else:
-            self.interval_combo_box.setEnabled(False)
+        b = state == Qt.CheckState.Checked
+        self.interval_combo_box.setEnabled(b)
+        self.controller.set_autorefresh(b)
 
 
     def add_user_dialog(self):

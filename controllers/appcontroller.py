@@ -1,5 +1,4 @@
-from datetime import datetime
-from PyQt5.QtCore import QObject, pyqtSignal, QTimer, QThread
+from PyQt5.QtCore import QObject, pyqtSignal
 
 import crawler.bojcrawler as BOJCrawler
 
@@ -7,13 +6,15 @@ import common.datastore as DataStore
 from common.trackerdata import TrackerData
 from common.bojsubmission import BOJSubmission
 
+UPDATE_INTERVAL_OPTIONS = [5, 10, 15, 30, 60]
+
 class AppController(QObject):
     # signals
     sig_username_added = pyqtSignal(str)
     sig_submissions_added = pyqtSignal(list)
     sig_submissions_changed = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
-    sig_refresh_interval_set = pyqtSignal(int)
+    sig_refresh_options_loaded = pyqtSignal(bool, list, int)
 
     def __init__(self):
         super().__init__()
@@ -29,7 +30,13 @@ class AppController(QObject):
         for username in self.tracker_data.usernames:
             self.sig_username_added.emit(username)
         self.sig_submissions_added.emit(self.tracker_data.submissions)
-        self.sig_refresh_interval_set.emit(self.tracker_data.update_interval_seconds)
+
+        # self.sig_refresh_options_loaded.emit(self.trak)
+
+
+    def set_autorefresh(self, b: bool):
+        self.tracker_data.do_autorefresh = b
+
 
     def add_username(self, username: str):
         if username in self.tracker_data.usernames:
@@ -43,7 +50,7 @@ class AppController(QObject):
         self.tracker_data.usernames.append(username) # TODO: sort?
         self.sig_username_added.emit(username)
     
-    # TODO: horribly unoptimized
+    # TODO: horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):
         self.tracker_data.usernames.remove(username)
 

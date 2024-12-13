@@ -3,14 +3,11 @@ from datetime import datetime
 
 from common.bojsubmission import BOJSubmission
 
-DEFAULT_DO_AUTOREFRESH = False
-DEFAULT_UPDATE_INTERVAL = 5
-
 @dataclass
 class TrackerData:
     last_updated: datetime
     do_autorefresh: bool
-    update_interval_seconds: int
+    update_interval_idx: int
     usernames: list[str]
     submissions: list[BOJSubmission]
     # TODO: max_history
@@ -19,8 +16,8 @@ class TrackerData:
     def empty():
         return TrackerData(
             last_updated=datetime.now().replace(microsecond=0),
-            do_autorefresh=DEFAULT_DO_AUTOREFRESH,
-            update_interval_seconds=DEFAULT_UPDATE_INTERVAL,
+            do_autorefresh=False,
+            update_interval_idx=0,
             usernames=[],
             submissions=[],
         )
@@ -30,7 +27,7 @@ class TrackerData:
         return TrackerData(
             last_updated=datetime.fromisoformat(json['last_updated']),
             do_autorefresh=json['autorefresh'],
-            update_interval_seconds=int(json['update_interval_seconds']),
+            update_interval_idx=int(json['update_interval_idx']),
             usernames=json['usernames'],
             submissions=[BOJSubmission.from_json(j) for j in json['submissions']],
         )
@@ -39,7 +36,7 @@ class TrackerData:
         return {
             'last_updated': self.last_updated.isoformat(),
             'autorefresh': self.do_autorefresh,
-            'update_interval_seconds': self.update_interval_seconds,
+            'update_interval_idx': self.update_interval_idx,
             'usernames': self.usernames,
             'submissions': [submission.to_json() for submission in self.submissions],
         }

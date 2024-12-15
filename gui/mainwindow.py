@@ -8,6 +8,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
 from controllers.appcontroller import AppController
+
+from common.userinfo import UserInfo
 from common.bojsubmission import BOJSubmission
 
 from gui.widgets.submissiontable import SubmissionTable
@@ -128,7 +130,7 @@ class MainWindow(QMainWindow):
         if dialog.exec_(): # returns True on QDialog.Accepted (= OK button), False on QDialog.Rejected (= Cancel Button)
             username = dialog.get_username().strip(' ')
             if username: # not empty
-                self.controller.add_username(username)
+                self.controller.add_user(username)
 
     def show_error(self, title: str, message: str):
         QMessageBox.warning(self, title, message)

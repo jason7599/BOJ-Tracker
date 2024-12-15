@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+from common.userinfo import UserInfo
 from common.bojsubmission import BOJSubmission
 
 # not specifing a user agent causes a 403 Forbidden
@@ -21,23 +22,11 @@ DEFAULT_MAX_FETCH_CNT = 500
 def user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
     # Weird. I swear to god it used to return 200, but now it seems to return 202.
-    # return response.status_code == 200
     return response.ok
 
-# TODO: optimize
-def get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:
-    res: list[BOJSubmission] = []
-    for username in usernames:
-        res += get_user_submissions(username, after_time=after_time)
-    
-    res.sort(key=lambda x: x.submit_time)# reverse=True)
+def get_user_submissions(user_info: UserInfo, after_time = datetime.min, max_cnt = DEFAULT_MAX_FETCH_CNT) -> list[BOJSubmission]:
 
-    return res
-
-
-def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_time = datetime.min) -> list[BOJSubmission]:
-
-    url = INIT_SEARCH_URL + username
+    url = INIT_SEARCH_URL + user_info.username
 
     res: list[BOJSubmission] = []
 
@@ -60,6 +49,12 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
 
         for entry in table_entries:
 
+            submit_id = int(entry['id'].removeprefix(SUBMIT_TAG_ID_PREFIX))
+
+            if submit_id == user_info.last_submit_id:
+                done = True
+                break
+
             submit_time = datetime.strptime(entry.find(class_='real-time-update')['title'],
                                              "%Y-%m-%d %H:%M:%S")
 
@@ -74,7 +69,8 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
 
             result_str = entry.find(class_='result').string 
 
-            submission = BOJSubmission(username,
+            submission = BOJSubmission(user_info.username,
+                                       submit_id,
                                        problem_title,
                                        problem_href,
                                        result_str,

@@ -3,6 +3,7 @@ from datetime import datetime
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer, QThread
 
 import common.datastore as DataStore
+from common.userinfo import UserInfo
 from common.bojsubmission import BOJSubmission
 import crawler.bojcrawler as BOJCrawler 
 from crawler.crawlerworker import CrawlerWorker
@@ -35,8 +36,8 @@ class AppController(QObject):
 
     # populate gui elements (submission table, username list) after gui initialized
     def post_gui_init(self):
-        for username in self.appdata.usernames:
-            self.sig_username_added.emit(username)
+        for user_info in self.appdata.user_infos:
+            self.sig_username_added.emit(user_info.username)
         self.sig_submissions_added.emit(self.appdata.submissions)
 
         self.sig_refresh_options_loaded.emit(
@@ -48,7 +49,7 @@ class AppController(QObject):
         self.sig_last_updated_changed.emit(self.appdata.last_updated)
 
         self.set_refresh_countdown(self.selected_interval())
-        if self.appdata.do_autorefresh and len(self.appdata.usernames) > 0:
+        if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
     def start_crawling(self):
@@ -69,7 +70,7 @@ class AppController(QObject):
         self.crawler_worker.sig_error.connect(self.on_crawling_error)
 
         self.crawler_thread.started.connect(
-            lambda: self.crawler_worker.crawl(self.appdata.usernames, self.appdata.last_updated)
+            lambda: self.crawler_worker.crawl(self.appdata.user_infos, self.appdata.last_updated)
         )
         self.crawler_thread.finished.connect(self.crawler_worker.deleteLater)
 
@@ -118,7 +119,7 @@ class AppController(QObject):
     
     def reset_timer(self):
         self.set_refresh_countdown(self.selected_interval())
-        if self.appdata.do_autorefresh and len(self.appdata.usernames) > 0:
+        if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
     def countdown(self):
@@ -135,7 +136,7 @@ class AppController(QObject):
         self.appdata.do_autorefresh = b
         if not b:
             self.countdown_timer.stop()
-        elif len(self.appdata.usernames) > 0:
+        elif len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
     def set_refresh_interval(self, idx: int):
@@ -144,26 +145,31 @@ class AppController(QObject):
             self.appdata.update_interval_idx = idx
             self.reset_timer()
 
-    def add_username(self, username: str):
-        if username in self.appdata.usernames:
-            self.sig_error.emit("Username Already Listed", f"Username {username} is already on the list!")
-            return
+    def add_user(self, username: str):
+        # shitty
+        for user_info in self.appdata.user_infos:
+            if user_info.username == username:
+                self.sig_error.emit("Username Already Listed", f"Username {username} is already on the list!")
+                return
         
         if not BOJCrawler.user_exists(username): # TODO: single thread
             self.sig_error.emit("Username Not Found", f"Username {username} was not found!")
             return
 
-        self.appdata.usernames.append(username) # TODO: sort?
+        self.appdata.user_infos.append(UserInfo(username, -1))
         self.sig_username_added.emit(username)
         
-        if len(self.appdata.usernames) == 1:
+        if len(self.appdata.user_infos) == 1:
             self.reset_timer()
     
     # horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):
-        self.appdata.usernames.remove(username)
+        for user_info in self.appdata.user_infos:
+            if user_info.username == username:
+                self.appdata.user_infos.remove(user_info)
+                break
 
-        if not self.appdata.usernames:
+        if len(self.appdata.user_infos) == 0:
             self.countdown_timer.stop()
             self.reset_timer()
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from common.userinfo import UserInfo
 from common.bojsubmission import BOJSubmission
 
 @dataclass
@@ -13,7 +14,7 @@ class AppData:
     last_updated: datetime
     do_autorefresh: bool
     update_interval_idx: int
-    usernames: list[str]
+    user_infos: list[UserInfo]
     submissions: list[BOJSubmission]
     # TODO: max_history
 
@@ -23,7 +24,7 @@ class AppData:
             last_updated=datetime.now().replace(microsecond=0),
             do_autorefresh=False,
             update_interval_idx=cls.DEFAULT_INTERVAL_IDX,
-            usernames=[],
+            user_infos=[],
             submissions=[],
         )
     
@@ -33,7 +34,7 @@ class AppData:
             last_updated=datetime.fromisoformat(json['last_updated']),
             do_autorefresh=json['autorefresh'],
             update_interval_idx=int(json['update_interval_idx']),
-            usernames=json['usernames'],
+            user_infos=[UserInfo.from_json(j) for j in json['user_infos']],
             submissions=[BOJSubmission.from_json(j) for j in json['submissions']],
         )
     
@@ -42,6 +43,6 @@ class AppData:
             'last_updated': self.last_updated.isoformat(),
             'autorefresh': self.do_autorefresh,
             'update_interval_idx': self.update_interval_idx,
-            'usernames': self.usernames,
+            'user_infos': [user_info.to_json() for user_info in self.user_infos],
             'submissions': [submission.to_json() for submission in self.submissions],
         }

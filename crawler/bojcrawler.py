@@ -22,7 +22,7 @@ def user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
     # Weird. I swear to god it used to return 200, but now it seems to return 202.
     # return response.status_code == 200
-    return bool(response) # True if status_code is between 200 and 399
+    return response.ok
 
 # TODO: optimize
 def get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:

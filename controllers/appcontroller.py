@@ -63,7 +63,7 @@ class AppController(QObject):
 
         self.appdata.last_updated = datetime.now()
         self.sig_last_updated_changed.emit(datetime.now())
-        
+
         self.sig_crawling_started.emit()
 
         self.crawler_worker = CrawlerWorker()
@@ -173,8 +173,6 @@ class AppController(QObject):
         ]
 
         self.sig_submissions_changed.emit(self.appdata.submissions)
-
-
 
     def write_appdata(self):
         DataStore.write_appdata(self.appdata)

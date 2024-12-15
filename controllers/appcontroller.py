@@ -47,8 +47,6 @@ class AppController(QObject):
 
         self.sig_last_updated_changed.emit(self.appdata.last_updated)
 
-        # TODO: initial scraping
-
         self.set_refresh_countdown(self.selected_interval())
         if self.appdata.do_autorefresh and len(self.appdata.usernames) > 0:
             self.countdown_timer.start()
@@ -60,9 +58,6 @@ class AppController(QObject):
             return
 
         self.countdown_timer.stop()
-
-        self.appdata.last_updated = datetime.now()
-        self.sig_last_updated_changed.emit(datetime.now())
 
         self.sig_crawling_started.emit()
 
@@ -89,6 +84,9 @@ class AppController(QObject):
         # TODO: Maybe these 2 lines are what should be done thru threads..
         self.appdata.submissions = self.appdata.submissions + new_submissions
         self.sig_submissions_added.emit(new_submissions)
+
+        self.appdata.last_updated = datetime.now()
+        self.sig_last_updated_changed.emit(datetime.now())
 
         self.reset_timer()
 

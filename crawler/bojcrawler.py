@@ -16,7 +16,7 @@ BOJ_BASE_URL = "https://www.acmicpc.net"
 
 SUBMIT_TAG_ID_PREFIX = "solution-"
 
-DEFAULT_MAX_FETCH_CNT = 200
+DEFAULT_MAX_FETCH_CNT = 500
 
 def user_exists(username: str) -> bool:
     response = requests.get(USER_SEARCH_URL + username, headers=REQUEST_HEADERS)
@@ -28,9 +28,9 @@ def user_exists(username: str) -> bool:
 def get_submissions(usernames: list[str], after_time = datetime.min) -> list[BOJSubmission]:
     res: list[BOJSubmission] = []
     for username in usernames:
-        res += get_user_submissions(username, 25, after_time)
+        res += get_user_submissions(username, after_time=after_time)
     
-    res.sort(key=lambda x: x.submit_time)# reverse=True) # latest first
+    res.sort(key=lambda x: x.submit_time)# reverse=True)
 
     return res
 
@@ -48,7 +48,7 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
         # probably would never happen unless BOJ relocates their URL
         # if this happens at all, it would be on the first search,
         # as even inputting a non-existent username does come back with status code 200.
-        if response.status_code != 200:
+        if not response.ok:
             raise Exception(f"Request on {url} returned with code {response.status_code}!")
 
         # lxml parser
@@ -63,7 +63,7 @@ def get_user_submissions(username: str, max_cnt = DEFAULT_MAX_FETCH_CNT, after_t
             submit_time = datetime.strptime(entry.find(class_='real-time-update')['title'],
                                              "%Y-%m-%d %H:%M:%S")
 
-            if submit_time < after_time:
+            if submit_time <= after_time:
                 done = True
                 break
 

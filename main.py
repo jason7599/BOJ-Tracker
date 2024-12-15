@@ -15,6 +15,9 @@ def main():
     exit_code = app.exec_()
     
     controller.write_appdata()
+
+    print("goodbye!")
+
     sys.exit(exit_code)
 
 

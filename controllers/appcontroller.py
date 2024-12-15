@@ -81,15 +81,17 @@ class AppController(QObject):
 
         self.autorefresh_error = False
 
-        # TODO: Maybe these 2 lines are what should be done thru threads..
-        self.appdata.submissions = self.appdata.submissions + new_submissions
-        self.sig_submissions_added.emit(new_submissions)
+        # TODO: Maybe the actual adding to lists are what should be done thru threads..
+
+        if len(new_submissions) > 0:
+            self.appdata.submissions.extend(new_submissions)
+            self.sig_submissions_added.emit(new_submissions)
 
         self.appdata.last_updated = datetime.now()
         self.sig_last_updated_changed.emit(datetime.now())
 
         self.reset_timer()
-
+        
         self.sig_crawling_finished.emit()
 
     def on_crawling_error(self, e: Exception):

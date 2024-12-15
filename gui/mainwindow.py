@@ -1,20 +1,21 @@
-from datetime import datetime
-
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import (
     QMainWindow, QPushButton, QMessageBox, QLabel, 
-    QComboBox, QCheckBox, QLCDNumber
+    QComboBox, QCheckBox, QLCDNumber,
+    QSystemTrayIcon, QApplication, QMenu
 )
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
 from controllers.appcontroller import AppController
+from common.bojsubmission import BOJSubmission
 
 from gui.widgets.submissiontable import SubmissionTable
 from gui.widgets.adduserdialog import AddUserDialog
 from gui.widgets.usernamelist import UsernameList
 
 UI_PATH = "gui/ui/main.ui"
-
+TRAY_ICON_PATH = "resources/app_icon.png"
 WINDOW_TITLE = "BOJ Tracker"
 
 class MainWindow(QMainWindow):
@@ -29,7 +30,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(WINDOW_TITLE)
 
         self.submission_table = self.findChild(SubmissionTable, 'submission_table')
-        self.controller.sig_submissions_added.connect(self.submission_table.add_all)
+        self.controller.sig_submissions_added.connect(self.on_new_submissions)
         self.controller.sig_submissions_changed.connect(self.submission_table.set_submissions)
 
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
@@ -73,9 +74,24 @@ class MainWindow(QMainWindow):
             lambda val: self.refresh_countdown_display.display(val)
         )
 
-        self.controller.sig_refresh_options_loaded.connect(self.set_refresh_options)
+        self.setup_tray_icon()
 
+        self.controller.sig_refresh_options_loaded.connect(self.set_refresh_options)
         self.controller.post_gui_init()
+
+    def setup_tray_icon(self):
+        self.tray_icon = QSystemTrayIcon(QIcon(TRAY_ICON_PATH), QApplication.instance())
+        self.tray_icon.setToolTip("BOJ Tracker")
+
+        tray_menu = QMenu()
+        quit_action = tray_menu.addAction("quit")
+        quit_action.triggered.connect(QApplication.instance().quit)
+
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
+
+    def on_new_submissions(self, new_submissions: list[BOJSubmission]):
+        self.submission_table.add_all(new_submissions)
 
     def set_refresh_options(self, 
                             do_autorefresh: bool, 

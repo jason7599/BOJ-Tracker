@@ -98,7 +98,7 @@ class MainWindow(QMainWindow):
         self.notify_new_submissions(new_submissions)
 
     def notify_new_submissions(self, new_submissions: list[BOJSubmission]):
-        if self.tray_icon:
+        if len(new_submissions) > 0 and self.tray_icon:
             self.tray_icon.showMessage(
                 "New Submissions!",
                 f"{len(new_submissions)} new submissions fetched!",

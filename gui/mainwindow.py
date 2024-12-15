@@ -17,6 +17,7 @@ from gui.widgets.usernamelist import UsernameList
 UI_PATH = "gui/ui/main.ui"
 TRAY_ICON_PATH = "resources/app_icon.png"
 WINDOW_TITLE = "BOJ Tracker"
+NOTIFICATION_DURATION_MS = 3000
 
 class MainWindow(QMainWindow):
     def __init__(self, controller: AppController, parent=None): # DI
@@ -92,6 +93,16 @@ class MainWindow(QMainWindow):
 
     def on_new_submissions(self, new_submissions: list[BOJSubmission]):
         self.submission_table.add_all(new_submissions)
+        self.notify_new_submissions(new_submissions)
+
+    def notify_new_submissions(self, new_submissions: list[BOJSubmission]):
+        if self.tray_icon:
+            self.tray_icon.showMessage(
+                "New Submissions!",
+                f"{len(new_submissions)} new submissions fetched!",
+                QSystemTrayIcon.MessageIcon.Information,
+                NOTIFICATION_DURATION_MS
+            )
 
     def set_refresh_options(self, 
                             do_autorefresh: bool, 

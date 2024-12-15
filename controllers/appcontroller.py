@@ -13,10 +13,11 @@ class AppController(QObject):
     sig_submissions_added = pyqtSignal(list)
     sig_submissions_changed = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
-    sig_refresh_options_loaded = pyqtSignal(bool, list, int, datetime)
+    sig_refresh_options_loaded = pyqtSignal(bool, list, int)
     sig_crawling_started = pyqtSignal()
     sig_crawling_finished = pyqtSignal()
     sig_countdown_update = pyqtSignal(int)
+    sig_last_updated_changed = pyqtSignal(datetime)
 
     def __init__(self):
         super().__init__()
@@ -41,9 +42,10 @@ class AppController(QObject):
         self.sig_refresh_options_loaded.emit(
             self.appdata.do_autorefresh,
             self.appdata.INTERVAL_OPTIONS,
-            self.appdata.update_interval_idx,
-            self.appdata.last_updated
+            self.appdata.update_interval_idx
         )
+
+        self.sig_last_updated_changed.emit(self.appdata.last_updated)
 
         # TODO: initial scraping
 
@@ -59,6 +61,9 @@ class AppController(QObject):
 
         self.countdown_timer.stop()
 
+        self.appdata.last_updated = datetime.now()
+        self.sig_last_updated_changed.emit(datetime.now())
+        
         self.sig_crawling_started.emit()
 
         self.crawler_worker = CrawlerWorker()
@@ -69,7 +74,7 @@ class AppController(QObject):
         self.crawler_worker.sig_error.connect(self.on_crawling_error)
 
         self.crawler_thread.started.connect(
-            lambda: self.crawler_worker.crawl(self.appdata.usernames)
+            lambda: self.crawler_worker.crawl(self.appdata.usernames, self.appdata.last_updated)
         )
         self.crawler_thread.finished.connect(self.crawler_worker.deleteLater)
 

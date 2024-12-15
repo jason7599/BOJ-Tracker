@@ -53,6 +53,11 @@ class MainWindow(QMainWindow):
         self.add_user_button.clicked.connect(self.add_user_dialog)
 
         self.last_updated_label = self.findChild(QLabel, 'last_updated_label')
+        self.controller.sig_last_updated_changed.connect(
+            lambda time: self.last_updated_label.setText(
+                "Last updated: " + str(time.replace(microsecond=0))
+            )
+        )
 
         self.auto_refresh_button = self.findChild(QCheckBox, 'auto_refresh_button')
         self.auto_refresh_button.stateChanged.connect(
@@ -75,17 +80,14 @@ class MainWindow(QMainWindow):
     def set_refresh_options(self, 
                             do_autorefresh: bool, 
                             interval_options: list[str], 
-                            interval_idx: int,
-                            last_updated: datetime):
+                            interval_idx: int):
         self.set_autorefresh(do_autorefresh)
         self.auto_refresh_button.setChecked(do_autorefresh)
         self.interval_combo_box.addItems([
             f"{t} seconds" for t in interval_options
         ])
         self.interval_combo_box.setCurrentIndex(interval_idx)
-        self.last_updated_label.setText(
-            "Last updated: " + str(last_updated.replace(microsecond=0))
-        )
+
 
     def set_autorefresh(self, b):
         self.interval_combo_box.setEnabled(b)

@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 
         self.submission_table = self.findChild(SubmissionTable, 'submission_table')
         self.controller.sig_submissions_added.connect(self.on_new_submissions)
-        self.controller.sig_submissions_changed.connect(self.submission_table.set_submissions)
+        self.controller.sig_submissions_set.connect(self.submission_table.set_submissions)
 
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
         self.refresh_button.clicked.connect(self.controller.start_crawling)

@@ -13,6 +13,7 @@ from common.bojsubmission import BOJSubmission
 
 from gui.widgets.submissiontable import SubmissionTable
 from gui.widgets.adduserdialog import AddUserDialog
+from gui.widgets.settingsdialog import SettingsDialog
 from gui.widgets.usernamelist import UsernameList
 
 UI_PATH = "gui/ui/main.ui"
@@ -34,6 +35,9 @@ class MainWindow(QMainWindow):
         self.submission_table = self.findChild(SubmissionTable, 'submission_table')
         self.controller.sig_submissions_added.connect(self.on_new_submissions)
         self.controller.sig_submissions_set.connect(self.submission_table.set_submissions)
+
+        self.settings_button = self.findChild(QPushButton, 'settings_button')
+        # self.settings_button.clicked.connect(self.)
 
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
         self.refresh_button.clicked.connect(self.controller.start_crawling)
@@ -116,13 +120,11 @@ class MainWindow(QMainWindow):
         ])
         self.interval_combo_box.setCurrentIndex(interval_idx)
 
-
     def set_autorefresh(self, b):
         self.interval_combo_box.setEnabled(b)
         self.refresh_countdown_display.setEnabled(b)
         self.controller.set_autorefresh(b)
 
-    
     def add_user_dialog(self):
         dialog = AddUserDialog(self)
 

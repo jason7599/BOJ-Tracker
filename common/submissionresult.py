@@ -9,9 +9,9 @@ class SubmissionResult:
         PENDING = ('', QColor('black')) # should never see this
         ACCEPTED = ('ac', QColor('green'))
         PARTIAL = ('pa', QColor('yellow'))
-        WRONG = ('wa', QColor('red'))
+        WRONG = ('wa', QColor('darkred'))
         ERROR = ('er', QColor('purple'))
-        LIMIT_EXCEEDED = ('le', QColor('orange'))
+        LIMIT_EXCEEDED = ('le', QColor('darkorange'))
 
         def __init__(self, json_name: str, display_color: QColor):
             self.json_name = json_name # name to be stored in json

@@ -1,42 +1,59 @@
 from enum import Enum
+from dataclasses import dataclass
 from PyQt5.QtGui import QColor
 
-class ResultType(Enum):
-
-    WAIT = QColor("orange")
-    COMPILE = QColor("orange")
-    JUDGING = QColor("orange")
-    AC = QColor("green")
-    PAC = QColor("yellow")
-    WA = QColor("red")
-    CE = QColor("blue")
-    RTE = QColor("blue")
-    TLE = QColor("darkorange")
-    MLE = QColor("darkorange")
-    OLE = QColor("darkorange")
-
-    def __init__(self, color: QColor):
-        self.color = color
-
-    @staticmethod
-    def from_result_class_str(result_class_str: str):
-        match result_class_str:
-            case 'result-wait':     return ResultType.WAIT
-            case 'result-compile': return ResultType.COMPILE
-            case 'result-judging': return ResultType.JUDGING
-            case 'result-ac':   return ResultType.AC
-            case 'result-pac': return ResultType.PAC
-            case 'result-wa': return ResultType.WA
-            case 'result-ce': return ResultType.CE
-            case 'result-rte': return ResultType.RTE
-            case 'result-tle': return ResultType.TLE
-            case 'result-mle': return ResultType.MLE
-            case 'result-ole': return ResultType.OLE
-            case _:
-                raise NameError(f"result_class_str {result_class_str} not listed")
-
-
+@dataclass
 class SubmissionResult:
-    def __init__(self, result_class: str, message: str):
-        self.message = message
-        self.result_type = ResultType.from_result_class_str(result_class)
+
+    class Type(Enum):
+        PENDING = ('', QColor('black')) # should never see this
+        ACCEPTED = ('ac', QColor('green'))
+        PARTIAL = ('pa', QColor('yellow'))
+        WRONG = ('wa', QColor('red'))
+        ERROR = ('er', QColor('purple'))
+        LIMIT_EXCEEDED = ('le', QColor('orange'))
+
+        def __init__(self, json_name: str, display_color: QColor):
+            self.json_name = json_name # name to be stored in json
+            self.display_color = display_color
+
+        # can't find a workaround.
+        @classmethod
+        def from_json_name(cls, json_name: str):
+            for type in cls:
+                if type.json_name == json_name:
+                    return type
+
+    message: str
+    type: Type
+
+    _RESULT_CLASS_MAPPING = {
+        'result-wait':      Type.PENDING,
+        'result-judging':   Type.PENDING,
+        'result-compile':   Type.PENDING,
+        'result-ac':        Type.ACCEPTED,
+        'result-pac':       Type.PARTIAL,
+        'result-wa':        Type.WRONG,
+        'result-ce':        Type.ERROR,
+        'result-rte':       Type.ERROR,
+        'result-tle':       Type.LIMIT_EXCEEDED,
+        'result-mle':       Type.LIMIT_EXCEEDED,
+        'result-ole':       Type.LIMIT_EXCEEDED
+    }
+
+    @classmethod
+    def get_type(cls, result_class: str):
+        return cls._RESULT_CLASS_MAPPING.get(result_class)
+
+    def to_json(self):
+        return {
+            'message': self.message,
+            'type': self.type.json_name
+        }
+    
+    @classmethod
+    def from_json(cls, json):
+        return SubmissionResult(
+            message=json['message'],
+            type=cls.Type.from_json_name(json['type'])
+        )

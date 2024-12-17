@@ -4,6 +4,7 @@ from datetime import datetime
 
 from common.userinfo import UserInfo
 from common.bojsubmission import BOJSubmission
+from common.submissionresult import SubmissionResult
 
 # not specifing a user agent causes a 403 Forbidden
 REQUEST_HEADERS = \
@@ -62,18 +63,32 @@ def get_user_submissions(user_info: UserInfo, after_time = datetime.min, max_cnt
                 done = True
                 break
 
+            result_tag = entry.find(class_='result')
+
+            result_message = result_tag.text
+            result_type = SubmissionResult.get_type(
+                result_tag.span['class'][1].rstrip(' ')
+            )
+
+            # DON'T FETCH PENDING SUBMISSIONS!
+            if result_type == SubmissionResult.Type.PENDING:
+                done = True
+                break
+
             problem_tag = entry.find(class_='problem_title')
 
             problem_title = problem_tag['title']
             problem_href = BOJ_BASE_URL + problem_tag['href']
 
-            result_str = entry.find(class_='result').string 
 
             submission = BOJSubmission(user_info.username,
                                        submit_id,
                                        problem_title,
                                        problem_href,
-                                       result_str,
+                                       SubmissionResult(
+                                           message=result_message,
+                                           type=result_type
+                                       ),
                                        submit_time)
 
             res.append(submission)

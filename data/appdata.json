@@ -1,33 +1,7 @@
 {
-    "last_updated": "2024-12-16T08:40:01.823966",
+    "last_updated": "2024-12-17T13:28:28.393106",
     "autorefresh": true,
     "update_interval_idx": 0,
-    "user_infos": [
-        {
-            "name": "jason7599",
-            "last_submit_id": 87488381
-        },
-        {
-            "name": "shhhhzzang",
-            "last_submit_id": -1
-        }
-    ],
-    "submissions": [
-        {
-            "username": "jason7599",
-            "submit_id": 87488253,
-            "problem_title": "\ubb38\uc790\uc5f4 \uc555\ucd95 \ud574\uc81c",
-            "problem_href": "https://www.acmicpc.net/problem/23746",
-            "result": "\ub9de\uc558\uc2b5\ub2c8\ub2e4!!",
-            "time": "2024-12-15T20:13:51"
-        },
-        {
-            "username": "jason7599",
-            "submit_id": 87488381,
-            "problem_title": "\ubb38\uc790\uc5f4 \uc555\ucd95 \ud574\uc81c",
-            "problem_href": "https://www.acmicpc.net/problem/23746",
-            "result": "\ucc44\uc810 \uc900\ube44 \uc911",
-            "time": "2024-12-15T20:18:24"
-        }
-    ]
+    "user_infos": [],
+    "submissions": []
 }

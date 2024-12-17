@@ -12,7 +12,7 @@ class AppController(QObject):
     # signals
     sig_username_added = pyqtSignal(str)
     sig_submissions_added = pyqtSignal(list)
-    sig_submissions_changed = pyqtSignal(list)
+    sig_submissions_set = pyqtSignal(list)
     sig_error = pyqtSignal(str, str)
     sig_refresh_options_loaded = pyqtSignal(bool, list, int)
     sig_crawling_started = pyqtSignal()
@@ -38,7 +38,7 @@ class AppController(QObject):
     def post_gui_init(self):
         for user_info in self.appdata.user_infos:
             self.sig_username_added.emit(user_info.username)
-        self.sig_submissions_added.emit(self.appdata.submissions)
+        self.sig_submissions_set.emit(self.appdata.submissions)
 
         self.sig_refresh_options_loaded.emit(
             self.appdata.do_autorefresh,
@@ -178,7 +178,7 @@ class AppController(QObject):
             if submission.username != username
         ]
 
-        self.sig_submissions_changed.emit(self.appdata.submissions)
+        self.sig_submissions_set.emit(self.appdata.submissions)
 
     def write_appdata(self):
         DataStore.write_appdata(self.appdata)

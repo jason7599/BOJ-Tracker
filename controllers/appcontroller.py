@@ -48,7 +48,7 @@ class AppController(QObject):
 
         self.sig_last_updated_changed.emit(self.appdata.last_updated)
 
-        self.set_refresh_countdown(self.selected_interval())
+        self.set_refresh_countdown(self.get_selected_interval())
         if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
@@ -114,11 +114,11 @@ class AppController(QObject):
             self.crawler_thread.wait()
             self.crawler_thread = None
 
-    def selected_interval(self):
+    def get_selected_interval(self):
         return self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx]
     
     def reset_timer(self):
-        self.set_refresh_countdown(self.selected_interval())
+        self.set_refresh_countdown(self.get_selected_interval())
         if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 

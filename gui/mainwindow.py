@@ -9,7 +9,6 @@ from PyQt5.QtCore import Qt
 
 from controllers.appcontroller import AppController
 
-from common.userinfo import UserInfo
 from common.bojsubmission import BOJSubmission
 
 from gui.widgets.submissiontable import SubmissionTable

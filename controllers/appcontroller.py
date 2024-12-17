@@ -38,7 +38,6 @@ class AppController(QObject):
     def post_gui_init(self):
         for user_info in self.appdata.user_infos:
             self.sig_username_added.emit(user_info.username)
-
         self.sig_submissions_set.emit(self.appdata.submissions)
 
         self.sig_refresh_options_loaded.emit(

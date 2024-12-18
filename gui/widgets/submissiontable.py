@@ -25,7 +25,6 @@ class SubmissionTable(QTableView):
 
     # TODO: problem icon along problem_title
     # TODO: more readable submit_time
-    # TODO: colored result_str
     def add_submission(self, submission: BOJSubmission):
 
         username_item = QStandardItem(submission.username)

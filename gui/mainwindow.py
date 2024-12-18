@@ -98,7 +98,8 @@ class MainWindow(QMainWindow):
 
     def on_new_submissions(self, new_submissions: list[BOJSubmission]):
         self.submission_table.add_all(new_submissions)
-        self.notify_new_submissions(new_submissions)
+        if self.controller.get_settings().notify_new_submissions:
+            self.notify_new_submissions(new_submissions)
 
     def notify_new_submissions(self, new_submissions: list[BOJSubmission]):
         if len(new_submissions) > 0 and self.tray_icon:
@@ -129,9 +130,10 @@ class MainWindow(QMainWindow):
         self.controller.pause_timer()
 
         dialog = SettingsDialog(self.controller.get_settings(), self)
+        dialog.sig_clear_submissions.connect(self.controller.clear_submissions)
 
         if dialog.exec_():
-            ...
+            self.controller.settings_changed(dialog.settings)
 
         self.controller.resume_timer()
 

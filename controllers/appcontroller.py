@@ -177,6 +177,10 @@ class AppController(QObject):
     def resume_timer(self):
         if self.appdata.settings.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
+
+    def clear_submissions(self):
+        self.appdata.submissions.clear()
+        self.sig_submissions_set.emit([])
     
     # horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):

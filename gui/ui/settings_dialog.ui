@@ -39,7 +39,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="notification_checkbox">
          <property name="text">
           <string/>
          </property>
@@ -70,12 +70,12 @@
         </spacer>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBox"/>
+        <widget class="QComboBox" name="submissions_limit_combobox"/>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="clear_submissions_button">
        <property name="text">
         <string>Clear All Submissions</string>
        </property>

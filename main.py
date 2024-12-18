@@ -16,10 +16,7 @@ def main():
     
     controller.write_appdata()
 
-    print("goodbye!")
-
     sys.exit(exit_code)
-
 
 if __name__ == "__main__":
     main()

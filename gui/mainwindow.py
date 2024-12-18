@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self.controller.sig_submissions_set.connect(self.submission_table.set_submissions)
 
         self.settings_button = self.findChild(QPushButton, 'settings_button')
-        # self.settings_button.clicked.connect(self.)
+        self.settings_button.clicked.connect(self.settings_dialog)
 
         self.refresh_button = self.findChild(QPushButton, 'refresh_button')
         self.refresh_button.clicked.connect(self.controller.start_crawling)
@@ -51,8 +51,8 @@ class MainWindow(QMainWindow):
 
         self.username_list = self.findChild(UsernameList, 'username_list')
 
-        # i despise this but i see no other way. I can't use ctor because it's linked thru the ui file.
-        # well it works, so let it be
+        # field injection. I don't like it but i see no other way. 
+        # I can't use ctor because it's linked thru the ui file.
         self.username_list.controller = self.controller 
         self.controller.sig_username_added.connect(self.username_list.add_username_item)
 
@@ -124,6 +124,14 @@ class MainWindow(QMainWindow):
         self.interval_combo_box.setEnabled(b)
         self.refresh_countdown_display.setEnabled(b)
         self.controller.set_autorefresh(b)
+
+    def settings_dialog(self):
+        self.controller.pause_timer()
+
+        dialog = SettingsDialog(self.controller.get_settings(), self)
+
+        if dialog.exec_():
+            print("ok!")
 
     def add_user_dialog(self):
         dialog = AddUserDialog(self)

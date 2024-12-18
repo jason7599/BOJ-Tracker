@@ -1,4 +1,5 @@
 from datetime import datetime
+from copy import deepcopy
 
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer, QThread
 
@@ -161,6 +162,21 @@ class AppController(QObject):
         
         if len(self.appdata.user_infos) == 1:
             self.reset_timer()
+
+    def get_settings(self):
+        return deepcopy(self.appdata.settings)
+    
+    def settings_changed(self, settings):
+        self.appdata.settings = settings
+
+    def pause_timer(self):
+        self.countdown_timer.stop()
+
+    def resume_timer(self):
+        assert self.countdown_timer.isActive()
+
+        if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
+            self.countdown_timer.start()
     
     # horribly unoptimized.. maybe not. runs pretty fast ngl
     def remove_username(self, username: str):

@@ -30,3 +30,4 @@ class AppSettings:
             'notification': self.notify_new_submissions,
             'submissions_limit': self.submissions_limit
         }
+    

@@ -1,11 +1,20 @@
 {
-    "last_updated": "2024-12-17T14:33:25",
-    "autorefresh": false,
-    "update_interval_idx": 4,
+    "last_updated": "2024-12-18T11:22:52.168137",
+    "autorefresh": true,
+    "update_interval_idx": 1,
     "settings": {
         "notification": true,
         "submissions_limit": 250
     },
-    "user_infos": [],
+    "user_infos": [
+        {
+            "name": "shhhhzzang",
+            "last_submit_id": -1
+        },
+        {
+            "name": "jason7599",
+            "last_submit_id": -1
+        }
+    ],
     "submissions": []
 }

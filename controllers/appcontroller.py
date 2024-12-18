@@ -42,15 +42,15 @@ class AppController(QObject):
         self.sig_submissions_set.emit(self.appdata.submissions)
 
         self.sig_refresh_options_loaded.emit(
-            self.appdata.do_autorefresh,
-            self.appdata.INTERVAL_OPTIONS,
-            self.appdata.update_interval_idx
+            self.appdata.settings.do_autorefresh,
+            self.appdata.settings.INTERVAL_OPTIONS,
+            self.appdata.settings.update_interval_idx
         )
 
         self.sig_last_updated_changed.emit(self.appdata.last_updated)
 
         self.set_refresh_countdown(self.get_selected_interval())
-        if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
+        if self.appdata.settings.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
     def start_crawling(self):
@@ -116,34 +116,36 @@ class AppController(QObject):
             self.crawler_thread = None
 
     def get_selected_interval(self):
-        return self.appdata.INTERVAL_OPTIONS[self.appdata.update_interval_idx]
+        return self.appdata.settings.INTERVAL_OPTIONS[self.appdata.settings.update_interval_idx]
     
     def reset_timer(self):
         self.set_refresh_countdown(self.get_selected_interval())
-        if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
+        if self.appdata.settings.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
     def countdown(self):
-        if self.refresh_countdown == 0:
+        t = self.refresh_countdown - 1
+        self.set_refresh_countdown(t)
+        if t <= 0:
+            if t < 0:
+                print("HOW THE FUCK")
             self.start_crawling()
-        else:
-            self.set_refresh_countdown(self.refresh_countdown - 1)
 
     def set_refresh_countdown(self, val: int):
         self.refresh_countdown = val
         self.sig_countdown_update.emit(val)
 
     def set_autorefresh(self, b: bool):
-        self.appdata.do_autorefresh = b
+        self.appdata.settings.do_autorefresh = b
         if not b:
             self.countdown_timer.stop()
         elif len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
 
     def set_refresh_interval(self, idx: int):
-        if self.appdata.update_interval_idx != idx: #  inevitably gets called on init due to sig_refresh_options_loaded 
+        if self.appdata.settings.update_interval_idx != idx: #  inevitably gets called on init due to sig_refresh_options_loaded 
             self.countdown_timer.stop()
-            self.appdata.update_interval_idx = idx
+            self.appdata.settings.update_interval_idx = idx
             self.reset_timer()
 
     def add_user(self, username: str):
@@ -173,9 +175,7 @@ class AppController(QObject):
         self.countdown_timer.stop()
 
     def resume_timer(self):
-        assert self.countdown_timer.isActive()
-
-        if self.appdata.do_autorefresh and len(self.appdata.user_infos) > 0:
+        if self.appdata.settings.do_autorefresh and len(self.appdata.user_infos) > 0:
             self.countdown_timer.start()
     
     # horribly unoptimized.. maybe not. runs pretty fast ngl

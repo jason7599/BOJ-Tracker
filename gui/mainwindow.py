@@ -131,15 +131,21 @@ class MainWindow(QMainWindow):
         dialog = SettingsDialog(self.controller.get_settings(), self)
 
         if dialog.exec_():
-            print("ok!")
+            ...
+
+        self.controller.resume_timer()
 
     def add_user_dialog(self):
+        self.controller.pause_timer()
+
         dialog = AddUserDialog(self)
 
         if dialog.exec_(): # returns True on QDialog.Accepted (= OK button), False on QDialog.Rejected (= Cancel Button)
             username = dialog.get_username().strip(' ')
             if username: # not empty
                 self.controller.add_user(username)
+        
+        self.controller.resume_timer()
 
     def show_error(self, title: str, message: str):
         QMessageBox.warning(self, title, message)

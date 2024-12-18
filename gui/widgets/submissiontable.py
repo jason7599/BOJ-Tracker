@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QDesktopServices, QFont
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QDesktopServices, QColorConstants
 
 from common.bojsubmission import BOJSubmission
 
@@ -31,11 +31,13 @@ class SubmissionTable(QTableView):
         username_item = QStandardItem(submission.username)
 
         problem_item = QStandardItem(submission.problem_title)
-        problem_item.setData(submission.problem_href, Qt.UserRole)
+        problem_item.setData(submission.problem_href, Qt.ItemDataRole.UserRole)
+        problem_item.setData(QColorConstants.DarkCyan, Qt.ItemDataRole.ForegroundRole)
+        problem_item.font().setUnderline(True)
 
         result_item = QStandardItem(submission.result.message)
         result_item.font().setBold(True)
-        result_item.setData(submission.result.type.display_color, Qt.ForegroundRole) 
+        result_item.setData(submission.result.type.display_color, Qt.ItemDataRole.ForegroundRole) 
 
         time_item = QStandardItem(str(submission.submit_time))
 
@@ -67,7 +69,7 @@ class SubmissionTable(QTableView):
         index = self.indexAt(event.pos())
 
         if index.isValid() and COLUMN_LABELS[index.column()] == "Problem": # kinda shitty
-            href = index.data(Qt.UserRole)
+            href = index.data(Qt.ItemDataRole.UserRole)
             QDesktopServices.openUrl(QUrl(href))
 
         return super().mousePressEvent(event)

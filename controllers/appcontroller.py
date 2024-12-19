@@ -58,7 +58,7 @@ class AppController(QObject):
         if self.crawler_thread and self.crawler_thread.isRunning():
             print("crawler thread already running!")
             return
-
+        
         self.countdown_timer.stop()
 
         self.sig_crawling_started.emit()
@@ -71,7 +71,10 @@ class AppController(QObject):
         self.crawler_worker.sig_error.connect(self.on_crawling_error)
 
         self.crawler_thread.started.connect(
-            lambda: self.crawler_worker.crawl(self.appdata.user_infos, self.appdata.last_updated)
+            lambda: self.crawler_worker.crawl(
+                self.appdata.user_infos, 
+                self.appdata.last_updated
+            )
         )
         self.crawler_thread.finished.connect(self.crawler_worker.deleteLater)
 
@@ -83,17 +86,14 @@ class AppController(QObject):
 
         self.autorefresh_error = False
 
-        # TODO: Maybe the actual adding to lists are what should be done thru threads..
-
         if len(new_submissions) > 0:
             self.appdata.submissions.extend(new_submissions)
-            self.sig_submissions_added.emit(new_submissions)
+            self.sig_submissions_added.emit(new_submissions) # submissions get appended to the submissions_table
 
         self.appdata.last_updated = datetime.now()
         self.sig_last_updated_changed.emit(datetime.now())
 
         self.reset_timer()
-        
         self.sig_crawling_finished.emit()
 
     def on_crawling_error(self, e: Exception):
